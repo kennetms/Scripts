@@ -85,8 +85,10 @@ public class GameController : MonoBehaviour
     //where you want valid spawnpoints in the scene to be.
     private List<Vector3> m_SpawnPoints;
 
+    //the maximum reach distance for selecting an object.
     public float m_MaxDistance;
 
+    //the player in the scene
     public OVRPlayerController m_player;
 
     //Reticle gaze pointer
@@ -196,14 +198,14 @@ public class GameController : MonoBehaviour
             //setting the hazard mode based on trigger presses
             m_HazardMode = OVRInput.GetDown(OVRInput.Button.SecondaryIndexTrigger) ? !m_HazardMode : m_HazardMode;
 
-            #region//Raycasting/object interaction code
+            #region Raycasting/object interaction code
             RaycastHit hit;
             Vector3 reticleScreen = Camera.main.WorldToScreenPoint(m_reticle.transform.position);
 
             Ray ray = Camera.main.ScreenPointToRay(reticleScreen);//new Ray(m_player.transform.position, m_reticle.transform.position);
 
             if (OVRInput.GetDown(OVRInput.Button.One)) //pressed the A button
-                if (Physics.Raycast(ray, out hit, m_MaxDistance)) //if we're raycasting onto an object
+                if (Physics.Raycast(ray, out hit, m_MaxDistance)) //if we're raycasting onto an object 
                     Interact(hit.transform.gameObject); //try interacting with the object we raycasted onto
 
             if (OVRInput.GetDown(OVRInput.Button.Two) && m_Hints > 0) //B button
@@ -301,6 +303,7 @@ public class GameController : MonoBehaviour
     /// <summary>
     /// Selects a single child GameObject to display for a single parent object
     /// </summary>
+    /// <param name="parent"> The parent for which we are selecting children</param>
     private void ParentSelectChild(GameObject parent)
     {
             //getting the two children objects
@@ -352,16 +355,28 @@ public class GameController : MonoBehaviour
         } while (currCount < maxDisabledItems * randomSpawn && ++i != startPoint - 1);
     }
 
+    ///interact with obj; check validity of interaction and actually execute the interaction.
     public void Interact(GameObject obj)
     {
+        //getting the ObjectInformation. ObjectInformation should only be placed on objects that
+        //are intended to be interacted with. objInfo will contain a flag for if this object
+        //was already interacted with.
         ObjectInformation objInfo = obj.GetComponent<ObjectInformation>();
 
-        //is our object meant to be interacted with? if so, have we already interacted with it?
-        if(objInfo == null || objInfo.interactedWith)
+        //is our object meant to be interacted with?
+        if(objInfo == null)
         {
             Debug.Log("tried to interact with a non-interactable object");
             return;
         }
+        else if(objInfo.interactedWith) //have we already interacted with the object?
+        {
+            Debug.Log("tried to interact with an object we've already interacted with");
+            return;
+        }
+        
+        
+        //update interaction flag.
         objInfo.interactedWith = true;
         
         //string for comparing tags
@@ -373,29 +388,39 @@ public class GameController : MonoBehaviour
         //did we select the correct object type for the object?
         if(correctTag)
         {
+            //Apply a green (correct) outline to the object model and add score
             m_OutlineApplier.ApplyGreenOutline(obj);
             AddScore();
         }
         else
         {
+            //Apply a red (incorrect) outline to the object
             m_OutlineApplier.ApplyRedOutline(obj);
-            //as long as we're not on easy, points should be lost.
+            
+            //as long as we're not on easy, points should be lost for incorrect selection.
             if(difficulty != Difficulty.Easy)
                 SubtractScore();
         }
+        
+        //Regardless of if it was correct or not, the object should be added to the review panel.
         m_reviewPanel.AddReviewPanelObject(obj);
     }
 
     public void Hinteract(GameObject obj)
     {
+        //getting the ObjectInformation. ObjectInformation should only be placed on objects that
+        //are intended to be interacted with. objInfo will contain a flag for if this object
+        //was already interacted with.
         ObjectInformation objInfo = obj.GetComponent<ObjectInformation>();
 
+        //did we add add the object information component?
         if(objInfo == null)
         {
             Debug.LogError("Tried to hint an object that has no ObjectInformation.");
             return;
         }
 
+        //was the object already hinteracted with?
         if(objInfo.usedHint)
         {
             Debug.Log("Hinted an object that we've already hinted.");
@@ -408,14 +433,19 @@ public class GameController : MonoBehaviour
         //add the object to the review panel
         m_reviewPanel.AddReviewPanelObject(obj);
 
+        //add orange (hinted) outline to the object
         m_OutlineApplier.ApplyOrangeOutline(obj);
 
+        //decrement the amount of hints the player has remaining
         --m_Hints;
     }
 
     /**
+    //The harder or less obvious it is to spot the object, the higher the base score
+    //The base score is then modified by the difficulty modifier; harder difficulty gives less points
     public void AddScore(int baseScore)
     {
+        //base score * difficulty multiplier = final score to add
         m_Score += Math.Ceil(baseScore * difficultyMultiplier);
     }
 
@@ -442,6 +472,7 @@ public class GameController : MonoBehaviour
         m_Score -= score;
     }
 
+    //setup review panel and current player's name and score to the leaderboard
     public void SetPlayerName(string name)
     {
         m_globalController.AddLeaderboardPlayer(name,m_Score);
