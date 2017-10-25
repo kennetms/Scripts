@@ -18,6 +18,7 @@ public class ReviewPanelManager : MonoBehaviour {
     //the position in the review panel array of the object we are currently displaying
     private int currentReviewPos;
 
+    //the GameObject being displayed on the review panel currently. 
     private GameObject currentlyDisplayed;
 
     void Start()
@@ -78,9 +79,10 @@ public class ReviewPanelManager : MonoBehaviour {
             DisplayRotation.CenterObject(currentlyDisplayed);
     }
 
-    //switching review panel
+    //going to the next object in the review panel
     public void NextReviewObject()
     {
+        //looping to first object if we're currently displaying the last
         if (currentReviewPos < reviewPanel.Count - 1)
         {
             DisplayReviewPanelObject(++currentReviewPos);
@@ -92,9 +94,10 @@ public class ReviewPanelManager : MonoBehaviour {
         }
     }
 
-    //switching review panel
+    //backing up to the previous object displayed in the review panel
     public void PreviousReviewObject()
     {
+        //loop to last object if we're currently displaying the first.
         if (currentReviewPos > 0)
         {
             DisplayReviewPanelObject(--currentReviewPos);
