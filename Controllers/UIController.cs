@@ -12,8 +12,10 @@ public class UIController : MonoBehaviour {
     //GameObject for our leaderboard entry keyboard
     public GameObject m_KeyboardCanvas;
 
+    //GameObject for our review panel canvas display
     public GameObject m_ReviewPanelCanvas;
 
+    //ReviewPanelManager object that keeps track of the objects that needs to be displayed on the review panel
     public ReviewPanelManager m_ReviewManager;
 
     //Text object for our score
