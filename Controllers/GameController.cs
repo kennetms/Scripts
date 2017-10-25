@@ -34,7 +34,7 @@ public class GameController : MonoBehaviour
 
     #region Difficulty Settings
 
-    private Difficulty difficulty;
+    private GlobalController.Difficulty difficulty;
 
     public float m_pointMultiplier;
 
@@ -94,7 +94,7 @@ public class GameController : MonoBehaviour
     //Reticle gaze pointer
     public OVRGazePointer m_reticle;
 
-    public enum Difficulty { Easy = 1, Medium = 2, Hard = 3 };
+
     
     // Use this for initialization
     void Start ()
@@ -117,7 +117,7 @@ public class GameController : MonoBehaviour
         if (global == null)
         {
             Debug.LogError("No GlobalController to set GameController difficulty; did you start from the HouseScene?");
-            m_globalController = new GlobalController(1, 10);
+            m_globalController = new GlobalController(GlobalController.Difficulty.Easy, 10);
             DontDestroyOnLoad(m_globalController);
         }
         else
@@ -127,27 +127,27 @@ public class GameController : MonoBehaviour
         }
 
         //Set our round difficulty
-        difficulty = (Difficulty)m_globalController.m_difficulty;
+        difficulty = m_globalController.m_difficulty;
 
         //initializing game settings based on m_difficulty
         switch (difficulty)
         {
             //Easy gives higher points & has more total items spawn (less maxDisabledItems)
-            case Difficulty.Easy:
+            case GlobalController.Difficulty.Easy:
                 m_pointMultiplier = 1;
                 maxDisabledItems = 10;
                 gameSpawn = EasySpawn;
                 break;
 
             //Medium gives average points & has average item spawns (medium maxDisabledItems)
-            case Difficulty.Medium:
+            case GlobalController.Difficulty.Medium:
                 m_pointMultiplier = .75f;
                 maxDisabledItems = 15;
                 gameSpawn = MedSpawn;
                 break;
 
             //Hard gives low points & has average item spawns (high maxDisabledItems)
-            case Difficulty.Hard:
+            case GlobalController.Difficulty.Hard:
                 m_pointMultiplier = .5f;
                 maxDisabledItems = 20;
                 gameSpawn = HardSpawn;

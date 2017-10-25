@@ -9,14 +9,22 @@ public class GlobalController : MonoBehaviour {
     const string HouseScene = "HouseScene";
 
     //the array of players in the leaderboard
-    public static PlayerInfo[] leaderboard;
+    public static PlayerInfo[] easyLeaderboard;
+
+    public static PlayerInfo[] mediumLeaderboard;
+
+    public static PlayerInfo[] hardLeaderboard;
+
+    public static PlayerInfo[] combinedLeaderboard;
 
     private static bool m_created;
 
-    //the max number of players in the leaderboard
-    public int maxLeaderboardSize;
+    public enum Difficulty { Easy = 1, Medium = 2, Hard = 3 };
 
-    public int m_difficulty;
+    //the max number of players in the leaderboard
+    private int maxLeaderboardSize = 10;
+
+    public Difficulty m_difficulty;
 
     //the class that describes a player's information in the leaderboard
     //consists of a name, score, and the difficulty in which they played
@@ -49,7 +57,10 @@ public class GlobalController : MonoBehaviour {
             m_created = true;
 
             //initialize our leaderboard
-            leaderboard = new PlayerInfo[maxLeaderboardSize];
+            easyLeaderboard = new PlayerInfo[maxLeaderboardSize];
+            mediumLeaderboard = new PlayerInfo[maxLeaderboardSize];
+            hardLeaderboard = new PlayerInfo[maxLeaderboardSize];
+            combinedLeaderboard = new PlayerInfo[maxLeaderboardSize];
         }
 
     }
@@ -58,11 +69,15 @@ public class GlobalController : MonoBehaviour {
     /// </summary>
     /// <param name="diff">the difficulty for the current round</param>
     /// <param name="maxLBSize">maximum number of players in the leaderboard</param>
-    public GlobalController(int diff, int maxLBSize)
+    public GlobalController(Difficulty diff, int maxLBSize)
     {
         m_difficulty = diff;
         maxLeaderboardSize = maxLBSize;
-        leaderboard = new PlayerInfo[maxLeaderboardSize];
+        //initialize our leaderboard
+        easyLeaderboard = new PlayerInfo[maxLeaderboardSize];
+        mediumLeaderboard = new PlayerInfo[maxLeaderboardSize];
+        hardLeaderboard = new PlayerInfo[maxLeaderboardSize];
+        combinedLeaderboard = new PlayerInfo[maxLeaderboardSize];
     }
 
     void Awake()
@@ -72,10 +87,8 @@ public class GlobalController : MonoBehaviour {
     }
 
     //Adds a player with playerName and score to the leaderboard in the appropriate order.
-    public void AddLeaderboardPlayer(string playerName,int score)
-    {
-        PlayerInfo player = new PlayerInfo(score, playerName, m_difficulty);
-        
+    public void AddPlayerToLeaderboard(PlayerInfo player, PlayerInfo[] leaderboard)
+    {   
         if (leaderboard[0] != null)//players are in the leaderboard
         {
             //go through each m_player to find a spot for our current m_player.
@@ -113,6 +126,28 @@ public class GlobalController : MonoBehaviour {
         {
             leaderboard[0] = player;
         }
+    }
+
+    public void AddLeaderboardPlayer(string playerName, int score)
+    {
+        PlayerInfo player = new PlayerInfo(score, playerName, m_difficulty);
+
+        switch (m_difficulty)
+        {
+            case 1:
+                AddPlayerToLeaderboard(player, easyLeaderboard);
+                break;
+            case 2:
+                AddPlayerToLeaderboard(player, mediumLeaderboard);
+                break;
+            case 3:
+                AddPlayerToLeaderboard(player, hardLeaderboard);
+                break;
+            default:
+                break;
+        }
+
+        AddPlayerToLeaderboard(player, combinedLeaderboard);
     }
 
     //sets the difficulty for our next round and changes to the scene the game is located in.
