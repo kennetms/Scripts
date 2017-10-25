@@ -2,12 +2,14 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/// script that displays and rotates the object in the review panel
 public class DisplayRotation : MonoBehaviour
 {
     /// <summary>
     ///Bottom left is 0,0,0
     ///Top right is 1,1,0
     ///Z is positive distance away from camera
+    ///positioning the object
     /// </summary>
     public static Vector3 positionOnScreen = new Vector3(0.2f, 0.4f, 4.0f);
 
