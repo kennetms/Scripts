@@ -10,7 +10,8 @@ public class LeaderboardManager : MonoBehaviour {
     public Text m_leaderboardText;
 
 	// Use this for initialization
-	void Start () {
+	void Start ()
+    {
         //global is a general game object with the globalcontroller tag holding our GlobalController script.
         GameObject global = GameObject.FindGameObjectWithTag("globalcontroller");
         if (global == null)

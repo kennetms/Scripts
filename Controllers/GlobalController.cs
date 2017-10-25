@@ -24,10 +24,10 @@ public class GlobalController : MonoBehaviour {
     {
         public int score;
         public string name;
-        //public int difficulty;
+        public int difficulty;
 
-        public PlayerInfo(int s, string n)
-        { score = s; name = n; }
+        public PlayerInfo(int s, string n, int d)
+        { score = s; name = n; difficulty = d; }
     }
     void Start()
     {
@@ -74,7 +74,7 @@ public class GlobalController : MonoBehaviour {
     //Adds a player with playerName and score to the leaderboard in the appropriate order.
     public void AddLeaderboardPlayer(string playerName,int score)
     {
-        PlayerInfo player = new PlayerInfo(score, playerName);
+        PlayerInfo player = new PlayerInfo(score, playerName, m_difficulty);
         
         if (leaderboard[0] != null)//players are in the leaderboard
         {
