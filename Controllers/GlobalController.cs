@@ -19,6 +19,8 @@ public class GlobalController : MonoBehaviour {
 
     private static bool m_created;
 
+    private static GlobalController m_Instance;
+
     public enum Difficulty { Easy = 1, Medium = 2, Hard = 3 };
 
     //the max number of players in the leaderboard
@@ -37,25 +39,26 @@ public class GlobalController : MonoBehaviour {
         public PlayerInfo(int s, string n, int d)
         { score = s; name = n; difficulty = d; }
     }
+
+    //Static function for getting the instance of the GlobalController
+    public static GlobalController GetInstance() { return m_Instance; }
+
     void Start()
     {
-        //checking we don't instantiate a 2nd globalcontroller
-        GameObject[] existingController = GameObject.FindGameObjectsWithTag("globalcontroller");
+        //Check if our GlobalController has been created already
         if (m_created)
         {
-            foreach ( GameObject global in existingController )
-            {
-                if(global != this)
-                {
-                    Destroy(global);
-                    break;
-                }
-            }
+            //we want to reset our GlobalController to its state in the MainMenu,
+            //so we delete our current instance and use the one instantiated by the MainMenu.
+            if (m_Instance != null)
+                Destroy(m_Instance);
+
+            m_Instance = this;
         }
         else
         {
             m_created = true;
-
+            m_Instance = this;
             //initialize our leaderboard
             easyLeaderboard = new PlayerInfo[maxLeaderboardSize];
             mediumLeaderboard = new PlayerInfo[maxLeaderboardSize];
@@ -78,6 +81,8 @@ public class GlobalController : MonoBehaviour {
         mediumLeaderboard = new PlayerInfo[maxLeaderboardSize];
         hardLeaderboard = new PlayerInfo[maxLeaderboardSize];
         combinedLeaderboard = new PlayerInfo[maxLeaderboardSize];
+        m_created = true;
+        m_Instance = this;
     }
 
     void Awake()
