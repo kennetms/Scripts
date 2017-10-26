@@ -94,11 +94,14 @@ public class GameController : MonoBehaviour
     //Reticle gaze pointer
     public OVRGazePointer m_reticle;
 
+    public GameObject bLayout;
 
     
     // Use this for initialization
     void Start ()
     {
+        bLayout.SetActive(false);
+
         //associate m_player with the OVRPlayerController
         m_player = GameObject.FindObjectOfType<OVRPlayerController>();
 
@@ -216,6 +219,14 @@ public class GameController : MonoBehaviour
                     //and add to review panel
                     Hinteract(hit.transform.gameObject);
                 }
+            }
+
+            if (OVRInput.GetDown(OVRInput.Button.Four)) //pressed the Y button
+            {
+                if (bLayout.activeSelf)
+                    bLayout.SetActive(false);
+                else
+                    bLayout.SetActive(true);
             }
             #endregion
 
@@ -398,7 +409,7 @@ public class GameController : MonoBehaviour
             m_OutlineApplier.ApplyRedOutline(obj);
             
             //as long as we're not on easy, points should be lost for incorrect selection.
-            if(difficulty != Difficulty.Easy)
+            if(difficulty != GlobalController.Difficulty.Easy)
                 SubtractScore();
         }
         

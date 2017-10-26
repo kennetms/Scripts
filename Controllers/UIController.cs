@@ -165,7 +165,7 @@ public class UIController : MonoBehaviour {
     private void LoadKeyboard()
     {
         m_KeyboardCanvas.SetActive(true);
-    }
+    }   
 
     /// <summary>
     /// Sets up the review panel after the user is done entering their initials for the leaderboard.

@@ -22,7 +22,7 @@ public class GlobalController : MonoBehaviour {
     public enum Difficulty { Easy = 1, Medium = 2, Hard = 3 };
 
     //the max number of players in the leaderboard
-    private int maxLeaderboardSize = 10;
+    public int maxLeaderboardSize = 10;
 
     public Difficulty m_difficulty;
 
@@ -32,9 +32,9 @@ public class GlobalController : MonoBehaviour {
     {
         public int score;
         public string name;
-        public int difficulty;
+        public Difficulty difficulty;
 
-        public PlayerInfo(int s, string n, int d)
+        public PlayerInfo(int s, string n, Difficulty d)
         { score = s; name = n; difficulty = d; }
     }
     void Start()
@@ -57,10 +57,14 @@ public class GlobalController : MonoBehaviour {
             m_created = true;
 
             //initialize our leaderboard
-            easyLeaderboard = new PlayerInfo[maxLeaderboardSize];
-            mediumLeaderboard = new PlayerInfo[maxLeaderboardSize];
-            hardLeaderboard = new PlayerInfo[maxLeaderboardSize];
-            combinedLeaderboard = new PlayerInfo[maxLeaderboardSize];
+            easyLeaderboard = new PlayerInfo[10];
+            if (easyLeaderboard[0] == null)
+            {
+                Debug.LogError("Working FIne");
+            }
+            mediumLeaderboard = new PlayerInfo[10];
+            hardLeaderboard = new PlayerInfo[10];
+            combinedLeaderboard = new PlayerInfo[10];
         }
 
     }
@@ -92,7 +96,7 @@ public class GlobalController : MonoBehaviour {
         if (leaderboard[0] != null)//players are in the leaderboard
         {
             //go through each m_player to find a spot for our current m_player.
-            for (int i = 0; i < maxLeaderboardSize - 1; ++i)
+            for (int i = 0; i < 10 - 1; ++i)
             {
                 //if there are less than the max number of players in the leaderboard, we have an empty spot
                 if (leaderboard[i] == null)
@@ -103,7 +107,7 @@ public class GlobalController : MonoBehaviour {
                 else if (player.score > leaderboard[i].score) //if this leaderboard score is less than the m_player's score we're trying to put in
                 {
                     //we want to insert our m_player into the leaderboard and move each score below it down one spot.
-                    while (i < maxLeaderboardSize)
+                    while (i < 10)
                     {
                         //no further players in the leaderboard, so we insert the last m_player into the empty spot.
                         if (leaderboard[i] == null)
@@ -134,13 +138,13 @@ public class GlobalController : MonoBehaviour {
 
         switch (m_difficulty)
         {
-            case 1:
+            case Difficulty.Easy:
                 AddPlayerToLeaderboard(player, easyLeaderboard);
                 break;
-            case 2:
+            case Difficulty.Medium:
                 AddPlayerToLeaderboard(player, mediumLeaderboard);
                 break;
-            case 3:
+            case Difficulty.Hard:
                 AddPlayerToLeaderboard(player, hardLeaderboard);
                 break;
             default:
@@ -153,7 +157,7 @@ public class GlobalController : MonoBehaviour {
     //sets the difficulty for our next round and changes to the scene the game is located in.
     public void SetDifficulty(int diff)
     {
-        m_difficulty = diff;
+        m_difficulty = (GlobalController.Difficulty)diff;
         SceneManager.LoadScene(HouseScene);
     }
 }
