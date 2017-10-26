@@ -8,35 +8,87 @@ using UnityEngine.SceneManagement;
 
 public class GameController : MonoBehaviour
 {
-    #region Controllers & manager associations
+    #region SpawnPoint Variables
+
+    //constant SpawnPoints
+    private const Vector3 sp1 = new Vector3(4, 2.5f, 5.5f);
+    private const Vector3 sp2 = new Vector3(11, 2.5f, 16);
+    private const Vector3 sp3 = new Vector3(11, 2.5f, 7);
+    private const Vector3 sp4 = new Vector3(13, 7, 9);
+
+    //A list of spawn points the user can have in scene.
+    //this list is constant and should be hardcoded in based on
+    //where you want valid spawnpoints in the scene to be.
+    private List<Vector3> m_SpawnPoints;
+
+    #endregion
+
+    #region Object Associations
+    //GlobalController Object, needed to add players to the leaderboard.
     private GlobalController m_globalController;
+
+    //ReviwePanelManager Object, used to add gameobjects to the review panel,
+    //and used to display the review panel.
     public ReviewPanelManager m_reviewPanel;
+
+    //The UIController, used to update Player UI and Display the Keyboard.
     public UIController m_InterfaceController;
+
+    //OutlineApplier, used to apply outlines to GameObjects to indicate 
+    //user success/failure, or when they've used a hint on an object.
     public OutlineApplier m_OutlineApplier;
+
+    //OVRPlayerController, The GameObject that holds our OVRCameraRig
+    //& input modules, as well as player options
+    public OVRPlayerController m_player;
+
+    //OVRGazePointer, the reticle object we use for our playercontroller
+    public OVRGazePointer m_reticle;
     #endregion
 
     #region Round attributes
 
-    public int m_Score;
-    public int m_Hints;
+    //flag for distinguishing if the gamecontroller is running the ingame functions
+    private bool m_InGame = true;
+
+    //the maximum reach distance for selecting an object.
+    [SerializeField] private float m_MaxDistance;
+
+    //The user's ingame score
+    [SerializeField] private int m_Score;
+
+    //The number of hints remaining
+    [SerializeField] private int m_Hints;
 
     //flag that tells us the object selection mode
     //true is hazard mode, false is safety mode.
-    public bool m_HazardMode;
+    [SerializeField] private bool m_HazardMode;
 
     /// <summary>
     /// Time left in the round, displayed on User interface
     /// Unit is seconds
     /// </summary>
-    public float m_timeLeft = 300.0f;
+    [SerializeField] private float m_timeLeft = 300.0f;
 
+    //Accessor for score
+    public int Score { get { return m_Score; } }
+
+    //Accessor for hints
+    public int Hints { get { return m_Score; } }
+
+    //Accessor for our current mode; True is hazard mode, false is safety mode.
+    public bool HazardMode { get { return m_HazardMode; } }
+
+    //Accessor for remaining time, in seconds
+    public int TimeLeft { get { return m_timeLeft; } }
+    
     #endregion
 
     #region Difficulty Settings
 
     private GlobalController.Difficulty difficulty;
 
-    public float m_pointMultiplier;
+    [SerializeField] private float m_pointMultiplier;
 
     //the maximum number of objects we can disable before we let the rest spawn;
     //based off of m_difficulty
@@ -77,6 +129,7 @@ public class GameController : MonoBehaviour
     private GameObject[] parents;
     #endregion
 
+<<<<<<< HEAD
     //flag for distinguishing if the gamecontroller is running the ingame functions
     private bool m_InGame = true;
 
@@ -97,6 +150,8 @@ public class GameController : MonoBehaviour
     public GameObject bLayout;
 
     
+=======
+>>>>>>> 35dddcf46e3dff82050108e6c01f050526237546
     // Use this for initialization
     void Start ()
     {
@@ -112,23 +167,30 @@ public class GameController : MonoBehaviour
             SpawnPlayer();
         }
 
-        //Reset the player's orientation as a precaution to aligning the player collider & OVRCameraRig
-        m_player.ResetOrientation();
+        //Setting our GlobalController Association
+        m_globalController = GlobalController.GetInstance();
 
-        //global is a general game object with the globalcontroller tag holding our GlobalController script.
-        GameObject global = GameObject.FindGameObjectWithTag("globalcontroller");
-        if (global == null)
+        //If our GlobalController hasn't been created yet, The game was not started from the MainMenu.
+        //We'll create a temporary GlobalController; however, this GlobalController won't function properly.
+        if (m_globalController == null)
         {
             Debug.LogError("No GlobalController to set GameController difficulty; did you start from the HouseScene?");
             m_globalController = new GlobalController(GlobalController.Difficulty.Easy, 10);
             DontDestroyOnLoad(m_globalController);
         }
-        else
-        {
-            //setting our relation to global controller and getting our m_difficulty.
-            m_globalController = global.GetComponent<GlobalController>();
-        }
 
+        InitializeDifficultySettings();
+
+        //Randomize object spawns if the debugging flag is true
+        if (RandomizeObjectSpawn)
+            RandomizeObjectEnabling();  
+    }
+
+    /// <summary>
+    /// Initializes the GameController's difficulty settings for the current round
+    /// </summary>
+    void InitializeDifficultySettings()
+    {
         //Set our round difficulty
         difficulty = m_globalController.m_difficulty;
 
@@ -160,10 +222,6 @@ public class GameController : MonoBehaviour
                 Debug.LogError("Difficulty settings can't be applied");
                 break;
         }
-
-        //Randomize object spawns if the debugging flag is true
-        if (RandomizeObjectSpawn)
-            RandomizeObjectEnabling();  
     }
 
     /// <summary>
@@ -177,17 +235,22 @@ public class GameController : MonoBehaviour
             return;
         }
 
-        //valid spawnpoints in our scene
-        m_SpawnPoints.Add(new Vector3(4, 2.5f, 5.5f));
-        m_SpawnPoints.Add(new Vector3(11, 2.5f, 16));
-        m_SpawnPoints.Add(new Vector3(11, 2.5f, 7));
-        m_SpawnPoints.Add(new Vector3(13, 7, 9));
+        //initialize the list and add our spawn points.
+        m_SpawnPoints = new List<Vector3>();
+        m_SpawnPoints.Add(sp1);
+        m_SpawnPoints.Add(sp2);
+        m_SpawnPoints.Add(sp3);
+        m_SpawnPoints.Add(sp4);
+
 
         //randomly choosing a player spawnpoint from our list of spawnpoints.
         //note that Random.Range(int min,int max) has an inclusive min and exclusive max value;
         //we need the max to be one greater than our actual last position in the list.
         Vector3 spawnPoint = m_SpawnPoints[Random.Range(0, m_SpawnPoints.Count)];
         m_player.transform.position = spawnPoint;
+
+        //Reset the player's orientation as a precaution to aligning the player collider & OVRCameraRig
+        m_player.ResetOrientation();
     }
 
     void Update()
