@@ -70,7 +70,7 @@ public class UIController : MonoBehaviour {
     /// </summary>
     void UpdateScoreText()
     {
-        m_scoreText.text = "Score: " + gc.m_Score;
+        m_scoreText.text = "Score: " + gc.Score;
     }
 
     /// <summary>
@@ -102,8 +102,8 @@ public class UIController : MonoBehaviour {
     private string ConvertTimeFormat()
     {
         //getting how many seconds & minutes we have
-        int seconds = (int)gc.m_timeLeft % 60;
-        int minutes = (int)gc.m_timeLeft / 60;
+        int seconds = (int)gc.TimeLeft % 60;
+        int minutes = (int)gc.TimeLeft / 60;
 
         //returning the proper format of the time string
         if(seconds < 10)
@@ -128,7 +128,7 @@ public class UIController : MonoBehaviour {
         string updatedText = "Selection Mode: ";
 
         //m_selectionmode true -> hazard mode
-        if (gc.m_HazardMode)
+        if (gc.HazardMode)
         {
             updatedText += "Hazard";
         }
@@ -145,7 +145,7 @@ public class UIController : MonoBehaviour {
     /// </summary>
     void UpdateHintsText()
     {
-        m_hintText.text = "Hints: " + gc.m_Hints;
+        m_hintText.text = "Hints: " + gc.Hints;
     }
 
     /// <summary>
