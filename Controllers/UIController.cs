@@ -152,5 +152,6 @@ public class UIController : MonoBehaviour {
         //disable the ingame UI
         Canvas UICanvas = m_scoreText.GetComponentInParent<Canvas>();
         UICanvas.enabled = false;
+        enabled = false;
     }
 }

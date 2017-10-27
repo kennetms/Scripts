@@ -293,6 +293,7 @@ public class GameController : MonoBehaviour
     {
         //we're no longer ingame
         m_InGame = false;
+        enabled = false;
 
         //disable player movement & gravity, and position them in a place they can view the review panel somewhere outside of the scene
         m_player.SetHaltUpdateMovement(true);
@@ -493,7 +494,6 @@ public class GameController : MonoBehaviour
         --m_Hints;
     }
 
-    
     //The harder or less obvious it is to spot the object, the higher the base score
     //The base score is then modified by the difficulty modifier; harder difficulty gives less points
     public void AddScore(int baseScore)

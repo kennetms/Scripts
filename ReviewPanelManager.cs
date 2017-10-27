@@ -29,18 +29,31 @@ public class ReviewPanelManager : MonoBehaviour {
 
     void Start()
     {
+        m_ReviewPanelCanvas.SetActive(false);
         reviewPanel = new List<GameObject>();
+        enabled = false;
     }
 
+    /// <summary>
+    /// Add a GameObject to the review panel
+    /// </summary>
+    /// <param name="obj">The object to add to the review panel</param>
     public void AddReviewPanelObject(GameObject obj)
     {
         reviewPanel.Add(obj);
     }
 
+    /// <summary>
+    /// Load the review panel
+    /// </summary>
     public void LoadReviewPanel()
     {
-        m_ReviewPanelCanvas.SetActive(true);
+        //initialize the review panel
         InitializeReviewPanel();
+        //set our review panel canvas to active
+        m_ReviewPanelCanvas.SetActive(true);
+
+        enabled = true;
     }
 
     private void InitializeReviewPanel()

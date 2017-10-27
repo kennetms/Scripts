@@ -57,6 +57,7 @@ public class VRKeyboard : MonoBehaviour {
 
     public void LoadKeyboard()
     {
+        enabled = true;
         m_KeyboardCanvas.SetActive(true);
     }
 
@@ -169,7 +170,10 @@ public class VRKeyboard : MonoBehaviour {
     // Use this for initialization
     void Start()
     {
+        //our inscene keyboard needs to start off disabled.
+        m_KeyboardCanvas.SetActive(false);
         CreateKeyboard();
+        enabled = false;
     }
 
     // insert text into input field when button is pressed
@@ -211,12 +215,18 @@ public class VRKeyboard : MonoBehaviour {
         }
     }
 
-    // change key text to show shifted character
+    /// <summary>
+    /// change key text to show shifted character
+    /// </summary>
     void SetCapsShift()
     {
+        //switch our capsShift
         capsShift = !capsShift;
+
+        //iterate through each key and switch its case displayed.
         foreach(var k in keys)
         {
+            //if our key isn't a special key, we can switch its case.
             if (!k.special)
             {
                 k.button.GetComponentInChildren<Text>().text = capsShift ? k.shiftedCharacter : k.character;
