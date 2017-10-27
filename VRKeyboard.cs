@@ -124,7 +124,7 @@ public class VRKeyboard : MonoBehaviour {
             0.0f
         );
         CreateKey("Bksp", "\b", "\b", KeyCode.Backspace, pos + new Vector2(spacing.x * 12.5f, 0.0f), new Vector2(2.0f, 1.0f), true);
-
+        //increments our next row spacing for y to be below this row
         pos.y -= spacing.y;
 
         CreateKeyRow(
@@ -154,8 +154,10 @@ public class VRKeyboard : MonoBehaviour {
             pos,
             1.0f
             );
+        CreateKey("Shift", "", "", KeyCode.RightShift, pos + new Vector2(spacing.x * 12.0f, 0.0f), new Vector2(3.0f, 1.0f), true);
+
         pos.y -= spacing.y;
-        CreateKey("Shift", "", "", KeyCode.RightShift, pos + new Vector2(spacing.x * 6.0f, 0.0f), new Vector2(6.0f, 1.0f), true);
+
         CreateKey("Space", " ", " ", KeyCode.Space, pos + new Vector2(spacing.x * 5.5f, 0.0f), new Vector2(6.0f, 1.0f), true);
     }
 
@@ -195,24 +197,24 @@ public class VRKeyboard : MonoBehaviour {
         }
         else if(key.code == KeyCode.RightShift)
         {
-            SetCapsShift()
+            SetCapsShift();
         }
         else if(displayText.text.Length < 3) //do we have 3 or less characters?
         {
             //if <3 characters, we can add another initial to their name.
-            //displayText.text += capsShift ? key.shiftedCharacter : key.character;
-            displayText.text += key.character;
+            displayText.text += capsShift ? key.shiftedCharacter : key.character;
         }
     }
 
     // change key text to show shifted character
-    void SetCapsShift(bool down)
+    void SetCapsShift()
     {
+        capsShift = !capsShift;
         foreach(var k in keys)
         {
             if (!k.special)
             {
-                k.button.GetComponentInChildren<Text>().text = down ? k.shiftedCharacter : k.character;
+                k.button.GetComponentInChildren<Text>().text = capsShift ? k.shiftedCharacter : k.character;
             }
         }
     }

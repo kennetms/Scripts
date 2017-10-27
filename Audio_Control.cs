@@ -14,9 +14,9 @@ public class Audio_Control : MonoBehaviour
     {
         //Fetch the AudioSource and ReviewInformation from the GameObject
         m_MyAudioSource = GetComponent<AudioSource>();
-        m_ReviewInfo = GetComponent<ObjectInformation>();
+        m_objInfo = GetComponent<ObjectInformation>();
 
-        if(m_ReviewInfo == null)
+        if(m_objInfo == null)
         {
             Debug.LogError(gameObject.name + " has no object information for AudioController.");
         }
