@@ -184,7 +184,7 @@ public class GameController : Controller
         m_player.ResetOrientation();
     }
 
-    protected virtual void Update()
+    override protected void Update()
     {
         //only update our UI & raycast if we're still in game
         if(m_InGame)
