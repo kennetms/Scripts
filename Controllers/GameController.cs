@@ -37,10 +37,6 @@ public class GameController : Controller
     //The UIController, used to update Player UI and Display the Keyboard.
     public UIController m_InterfaceController;
 
-    //OutlineApplier, used to apply outlines to GameObjects to indicate 
-    //user success/failure, or when they've used a hint on an object.
-    public OutlineApplier m_OutlineApplier;
-
     #endregion
 
     #region Round attributes
@@ -98,8 +94,10 @@ public class GameController : Controller
     public GameObject bLayout;
 
     // Use this for initialization
-    void Start ()
+    override protected void Start ()
     {
+        base.Start();
+        m_OutlineApplier = GetComponent<OutlineApplier>();
         bLayout.SetActive(false);
         
         //Setting our GlobalController Association
@@ -186,7 +184,7 @@ public class GameController : Controller
         m_player.ResetOrientation();
     }
 
-    void Update()
+    protected virtual void Update()
     {
         //only update our UI & raycast if we're still in game
         if(m_InGame)
@@ -196,7 +194,11 @@ public class GameController : Controller
 
             //setting the hazard mode based on trigger presses
             m_HazardMode = OVRInput.GetDown(OVRInput.Button.SecondaryIndexTrigger) ? !m_HazardMode : m_HazardMode;
-            
+
+            //handles raycasting
+            base.Update();
+
+
             if (OVRInput.GetDown(OVRInput.Button.Four)) //pressed the Y button
             {
                 if (bLayout.activeSelf)
@@ -341,7 +343,7 @@ public class GameController : Controller
     /// <summary>
     ///     interact with obj; check validity of interaction and actually execute the interaction.
     /// </summary>
-    public void Interact(GameObject obj)
+    public override void Interact(GameObject obj)
     {
         //getting the ObjectInformation. ObjectInformation should only be placed on objects that
         //are intended to be interacted with. objInfo will contain a flag for if this object
@@ -399,7 +401,7 @@ public class GameController : Controller
         m_reviewPanel.AddReviewPanelObject(obj);
     }
 
-    public void Hinteract(GameObject obj)
+    public override void Hinteract(GameObject obj)
     {
         //getting the ObjectInformation. ObjectInformation should only be placed on objects that
         //are intended to be interacted with. objInfo will contain a flag for if this object
@@ -435,7 +437,7 @@ public class GameController : Controller
 
     //The harder or less obvious it is to spot the object, the higher the base score
     //The base score is then modified by the difficulty modifier; harder difficulty gives less points
-    public void AddScore(int baseScore)
+    protected override void AddScore(int baseScore)
     {
         //base score * difficulty multiplier = final score to add
         int score = (int)Mathf.Ceil(baseScore * m_pointMultiplier);
@@ -445,7 +447,7 @@ public class GameController : Controller
 
     //the object was harder to spot, and has a higher base score; we want to subtract less for higher base scores,
     //since base scores consider object selection difficulty.
-    public void SubtractScore(int baseScore)
+    protected override void SubtractScore(int baseScore)
     {
         //doing 100-base score in the numerator gives less penalty for objects that were harder to spot.
         //1 - difficulty multiplier gives less penalty for medium difficulty, which has a larger difficulty multiplier than hard.

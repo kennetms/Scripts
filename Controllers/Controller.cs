@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class Controller : MonoBehaviour
 {
+    protected OutlineApplier m_OutlineApplier;
+
     //OVRPlayerController, The GameObject that holds our OVRCameraRig
     //& input modules, as well as player options
     public OVRPlayerController m_player;
@@ -11,27 +13,28 @@ public class Controller : MonoBehaviour
     //OVRGazePointer, the reticle object we use for our playercontroller
     public OVRGazePointer m_reticle;
 
+    private float m_MaxDistance;
     //The user's ingame score
-    [SerializeField] private int m_Score;
+    [SerializeField] protected int m_Score;
 
     //The number of hints remaining
-    [SerializeField] private int m_Hints;
+    [SerializeField] protected int m_Hints;
 
     //flag that tells us the object selection mode
     //true is hazard mode, false is safety mode.
-    [SerializeField] private bool m_HazardMode;
+    [SerializeField] protected bool m_HazardMode;
 
     /// <summary>
     /// Time left in the round, displayed on User interface
     /// Unit is seconds
     /// </summary>
-    [SerializeField] private float m_timeLeft = 300.0f;
+    [SerializeField] protected float m_timeLeft = 300.0f;
 
     //Accessor for score
     public int Score { get { return m_Score; } }
 
     //Accessor for hints
-    public int Hints { get { return m_Score; } }
+    public int Hints { get { return m_Hints; } }
 
     //Accessor for our current mode; True is hazard mode, false is safety mode.
     public bool HazardMode { get { return m_HazardMode; } }
@@ -39,13 +42,15 @@ public class Controller : MonoBehaviour
     //Accessor for remaining time, in seconds
     public float TimeLeft { get { return m_timeLeft; } }
 
-    void Start()
+    protected virtual void Start()
     {
         //associate m_player with the OVRPlayerController
         m_player = GameObject.FindObjectOfType<OVRPlayerController>();
+
+        m_MaxDistance = 1.5f;
     }
 
-    void Update()
+    protected virtual void Update()
     {
         if (OVRInput.GetDown(OVRInput.Button.One)) //pressed the A button
         {
@@ -54,7 +59,7 @@ public class Controller : MonoBehaviour
                 Interact(obj);
         }
 
-        if (OVRInput.GetDown(OVRInput.Button.Two)) //pressed the A button
+        if (OVRInput.GetDown(OVRInput.Button.Two)) //pressed the B button
         {
             GameObject obj = Raycast();
             if (obj != null)
@@ -96,7 +101,7 @@ public class Controller : MonoBehaviour
     /// <summary>
     /// interact with obj; check validity of interaction and actually execute the interaction.
     /// </summary>
-    public override void Interact(GameObject obj)
+    public virtual void Interact(GameObject obj)
     {
         //getting the ObjectInformation. ObjectInformation should only be placed on objects that
         //are intended to be interacted with. objInfo will contain a flag for if this object
@@ -129,17 +134,17 @@ public class Controller : MonoBehaviour
         {
             //Apply a green (correct) outline to the object model and add score
             m_OutlineApplier.ApplyGreenOutline(obj);
-            AddScore();
+            AddScore(objInfo.BaseScore);
         }
         else
         {
             //Apply a red (incorrect) outline to the object
             m_OutlineApplier.ApplyRedOutline(obj);
-            SubtractScore();
+            SubtractScore(objInfo.BaseScore);
         }
     }
 
-    public void Hinteract(GameObject obj)
+    public virtual void Hinteract(GameObject obj)
     {
         //getting the ObjectInformation. ObjectInformation should only be placed on objects that
         //are intended to be interacted with. objInfo will contain a flag for if this object
@@ -170,13 +175,13 @@ public class Controller : MonoBehaviour
         --m_Hints;
     }
 
-    protected override void AddScore()
+    protected virtual void AddScore(int baseScore)
     {
-        m_Score += 100;
+        m_Score += baseScore;
     }
 
-    protected override void SubtractScore()
+    protected virtual void SubtractScore(int baseScore)
     {
-        m_Score -= 100;
+        m_Score -= baseScore;
     }
 }
