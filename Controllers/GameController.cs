@@ -435,7 +435,7 @@ public class GameController : MonoBehaviour
         {
             //Apply a green (correct) outline to the object model and add score
             m_OutlineApplier.ApplyGreenOutline(obj);
-            AddScore(objInfo.baseScore);
+            AddScore(objInfo.BaseScore);
         }
         else
         {
@@ -452,7 +452,7 @@ public class GameController : MonoBehaviour
                 else
                 {
                     //if difficulty on hard, points should be lost no matter what.
-                    SubtractScore(objInfo.baseScore);
+                    SubtractScore(objInfo.BaseScore);
                 }
         }
         

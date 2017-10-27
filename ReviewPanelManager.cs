@@ -72,7 +72,7 @@ public class ReviewPanelManager : MonoBehaviour {
         }
 
         //displaying our review info for the object
-        m_reviewPanelText.text = reviewInfo.m_ReviewInfo;
+        m_reviewPanelText.text = reviewInfo.ReviewInfo;
     }
     
     void Update()

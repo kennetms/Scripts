@@ -6,6 +6,12 @@ using UnityEngine;
 ///and is placed on those objects to show they are interactable & they have information
 //for the review panel.
 public class ReviewInformation : ObjectInformation {
-    public string m_ReviewInfo;
-    public string m_HintInfo;
+    [SerializeField] private string m_ReviewInfo;
+    [SerializeField] private string m_HintInfo;
+
+    //accessor for an object's Review Info
+    public string ReviewInfo { get { return m_ReviewInfo; } }
+
+    //accessor for an object's Hint Info
+    public string HintInfo { get { return m_HintInfo; } }
 }

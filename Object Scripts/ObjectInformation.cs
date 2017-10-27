@@ -13,6 +13,8 @@ public class ObjectInformation : MonoBehaviour {
     //float for the baseScore of the object, depending on how visible/hidden an object is in scene. 1-99
     [SerializeField] private int baseScore;
 
+    public int BaseScore { get { return baseScore; } }
+
     //accessor for if we've interacted with an object.
     public bool Interacted { get { return interactedWith; } }
 
