@@ -350,17 +350,17 @@ public class GameController : MonoBehaviour
     /// <param name="parent"> The parent for which we are selecting children</param>
     private void ParentSelectChild(GameObject parent)
     {
-        int numChildren = parent.GetNumberChildren();
+        int numChildren = parent.transform.childCount;
         //disable all children of a parent object
-        for(int i = 0; i < numChildren; ++i)
-            parent.GetChild[i].SetActive(false);
+        for (int i = 0; i < numChildren; ++i)
+            parent.transform.GetChild(i).gameObject.SetActive(false);
 
         //note random.range is inclusive on the minimum but exclusive on max;
         //in this case we want numChildren as max and not numChildren - 1.
         int randVal = Random.Range(0, numChildren);
 
         //randomly selected child needs to be activated.
-        parent.GetChild[randVal].SetActive(true);
+        parent.transform.GetChild(randVal).gameObject.SetActive(true);
     }
 
     /// <summary>
