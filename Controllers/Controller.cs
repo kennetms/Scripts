@@ -12,8 +12,11 @@ public class Controller : MonoBehaviour
 
     //OVRGazePointer, the reticle object we use for our playercontroller
     public OVRGazePointer m_reticle;
-
+    
+    #region Game Attributes
+    //the maximum distance for which we can raycast
     private float m_MaxDistance;
+
     //The user's ingame score
     [SerializeField] protected int m_Score;
 
@@ -41,6 +44,7 @@ public class Controller : MonoBehaviour
 
     //Accessor for remaining time, in seconds
     public float TimeLeft { get { return m_timeLeft; } }
+    #endregion
 
     protected virtual void Start()
     {
@@ -52,50 +56,45 @@ public class Controller : MonoBehaviour
 
     protected virtual void Update()
     {
-        if (OVRInput.GetDown(OVRInput.Button.One)) //pressed the A button
+        //If the a button was pressed
+        if (OVRInput.GetDown(OVRInput.Button.One))
         {
+            //find if we're raycasting onto an object
             GameObject obj = Raycast();
+
+            //if we are raycasting onto an object, interact with it
             if (obj != null)
                 Interact(obj);
         }
 
-        if (OVRInput.GetDown(OVRInput.Button.Two)) //pressed the B button
+        //If the b button was pressed
+        if (OVRInput.GetDown(OVRInput.Button.Two))
         {
+            //find if we're raycasting onto an object
             GameObject obj = Raycast();
+
+            //if we're raycasting onto an object, hint it
             if (obj != null)
                 Hinteract(obj);
         }
 
     }
 
+    /// <summary>
+    /// Shoots a raycast into the scene from our reticle
+    /// </summary>
+    /// <returns></returns>
     protected GameObject Raycast()
     {
-        #region Raycasting/object interaction code
-        RaycastHit hit;
+        //Getting the point on our screen of the reticle
         Vector3 reticleScreen = Camera.main.WorldToScreenPoint(m_reticle.transform.position);
 
-        Ray ray = Camera.main.ScreenPointToRay(reticleScreen);//new Ray(m_player.transform.position, m_reticle.transform.position);
+        //creating a ray object of our reticle
+        Ray ray = Camera.main.ScreenPointToRay(reticleScreen);
 
-        if (Physics.Raycast(ray, out hit, m_MaxDistance))
-            return hit.transform.gameObject;
-
-        return null;
-        /**
-        if (OVRInput.GetDown(OVRInput.Button.One)) //pressed the A button
-            if (Physics.Raycast(ray, out hit, m_MaxDistance)) //if we're raycasting onto an object 
-                Interact(hit.transform.gameObject); //try interacting with the object we raycasted onto
-
-        if (OVRInput.GetDown(OVRInput.Button.Two) && m_Hints > 0) //B button
-        {
-            if (Physics.Raycast(ray, out hit, m_MaxDistance))
-            {
-                //Get a hint about the object
-                //and add to review panel
-                Hinteract(hit.transform.gameObject);
-            }
-        }*/
-
-        #endregion
+        RaycastHit hit;
+        //return the GameObject we hit if there is one, otherwise return null
+        return (Physics.Raycast(ray,out hit, m_MaxDistance) ? hit.transform.gameObject : null);
     }
 
     /// <summary>

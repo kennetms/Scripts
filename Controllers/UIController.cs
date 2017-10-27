@@ -8,7 +8,7 @@ public class UIController : MonoBehaviour {
 
     #region Object Associations
     //GameController object that keeps track of score, hints, hazard/safety modes, and time
-    public GameController m_GameController;
+    public Controller m_Controller;
     #endregion
 
     #region Text Objects
@@ -66,7 +66,7 @@ public class UIController : MonoBehaviour {
     /// </summary>
     void UpdateScoreText()
     {
-        m_scoreText.text = "Score: " + m_GameController.Score;
+        m_scoreText.text = "Score: " + m_Controller.Score;
     }
 
     /// <summary>
@@ -98,8 +98,8 @@ public class UIController : MonoBehaviour {
     private string ConvertTimeFormat()
     {
         //getting how many seconds & minutes we have
-        int seconds = (int)m_GameController.TimeLeft % 60;
-        int minutes = (int)m_GameController.TimeLeft / 60;
+        int seconds = (int)m_Controller.TimeLeft % 60;
+        int minutes = (int)m_Controller.TimeLeft / 60;
 
         //returning the proper format of the time string
         if(seconds < 10)
@@ -124,7 +124,7 @@ public class UIController : MonoBehaviour {
         string updatedText = "Selection Mode: ";
 
         //Hazardmode true is hazard tag; false is safety.
-        if (m_GameController.HazardMode)
+        if (m_Controller.HazardMode)
         {
             updatedText += "Hazard";
         }
@@ -141,7 +141,7 @@ public class UIController : MonoBehaviour {
     /// </summary>
     void UpdateHintsText()
     {
-        m_hintText.text = "Hints: " + m_GameController.Hints;
+        m_hintText.text = "Hints: " + m_Controller.Hints;
     }
 
     /// <summary>
