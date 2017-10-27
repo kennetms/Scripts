@@ -31,11 +31,22 @@ using UnityEngine.SceneManagement;
 
 public class VRKeyboard : MonoBehaviour {
 
-    public GameController gc;
+    //Our game controller object
+    public GameController m_GameController;
+
+    //the canvas on which the keyboard is displayed
     public GameObject canvas;
+
+    //the button prototype in which we will create each individual key
     public GameObject buttonPrototype;
+
+    //The text displaying the user's name above the keyboard
     public Text displayText;
+
+    //the X,Y origin of the keyboard position on the canvas
     public Vector2 origin;
+
+    //the Key spacing and sizing of each key on the keyboard canvas
     public Vector2 spacing;
     public Vector3 keyTranslation;
 
@@ -69,7 +80,7 @@ public class VRKeyboard : MonoBehaviour {
         key.pressed = false;
         key.special = special;
 
-        // create button
+        // create button with our button prototype object as a template
         GameObject obj = (GameObject)Object.Instantiate(buttonPrototype);
         obj.name = name;
         obj.transform.SetParent(canvas.transform, false);
@@ -139,12 +150,12 @@ public class VRKeyboard : MonoBehaviour {
         CreateKeyRow(
             "zxcvbnm,./",
             "ZXCVBNM<>?",
-            new KeyCode[] { KeyCode.Z, KeyCode.X, KeyCode.C, KeyCode.V, KeyCode.B, KeyCode.N, KeyCode.M, KeyCode.Comma, KeyCode.Period, KeyCode.Slash, KeyCode.RightShift },
+            new KeyCode[] { KeyCode.Z, KeyCode.X, KeyCode.C, KeyCode.V, KeyCode.B, KeyCode.N, KeyCode.M, KeyCode.Comma, KeyCode.Period, KeyCode.Slash},
             pos,
             1.0f
             );
         pos.y -= spacing.y;
-
+        CreateKey("Shift", "", "", KeyCode.RightShift, pos + new Vector2(spacing.x * 6.0f, 0.0f), new Vector2(6.0f, 1.0f), true);
         CreateKey("Space", " ", " ", KeyCode.Space, pos + new Vector2(spacing.x * 5.5f, 0.0f), new Vector2(6.0f, 1.0f), true);
     }
 
@@ -152,11 +163,6 @@ public class VRKeyboard : MonoBehaviour {
     void Start()
     {
         CreateKeyboard();
-        /**
-        if (displayText)
-        {
-            displayText.GetComponent<InputField>().ActivateInputField();
-        }*/
     }
 
     // insert text into input field when button is pressed
@@ -166,22 +172,30 @@ public class VRKeyboard : MonoBehaviour {
         key.button.GetComponent<Button>().interactable = false;
         key.button.GetComponent<Button>().interactable = true;
 
-
-        //Debug.Log(key.character);
-        //Debug.Log("button pressed: " + obj.name);
-        if (!displayText) return;
-
+        //we need a displayText object to display what the user has entered so far.
+        if(displayText == null)
+        {
+            Debug.LogError("No Display Text object to display user's name on.");
+            return;
+        }
 
         if (key.code == KeyCode.Return)
         {
+            /**submit event data
+             * var submittedEvent = new BaseEventData(EventSystem.current);
+             * ExecutedEvents.Execute(inputField, submitEvent, ExectueEvents.submitHandler);
+             **/
             //The user entered their name, so we want to enter in our GlobalController that information, then switch the scene.
-            gc.SetPlayerName(displayText.text);
-            //SceneManager.LoadScene("ReviewPanel");
+            m_GameController.SetPlayerName(displayText.text);
         }
         else if (key.code == KeyCode.Backspace && displayText.text.Length > 0)
         {
             // remove last char
             displayText.text = displayText.text.Substring(0, displayText.text.Length - 1);
+        }
+        else if(key.code == KeyCode.RightShift)
+        {
+            SetCapsShift()
         }
         else if(displayText.text.Length < 3) //do we have 3 or less characters?
         {
@@ -202,85 +216,4 @@ public class VRKeyboard : MonoBehaviour {
             }
         }
     }
-    /**
-    void OnGUI()
-    {
-        
-        // activate correct button when key is pressed
-        Event e = Event.current;
-
-        if (e.isKey && e.keyCode != KeyCode.None)
-        {
-            Debug.Log("Key code: " + e.keyCode);
-            if (keyCodeToKey.ContainsKey(e.keyCode))
-            {
-                Key key = keyCodeToKey[e.keyCode];
-                GameObject b = key.button;
-                Debug.LogError(b.name);
-                b.GetComponent<Button>().Select();
-
-                // send pointer down/up events to button
-                var pointerEvent = new PointerEventData(EventSystem.current);
-
-                if (e.type == EventType.keyDown)
-                {
-                    //Debug.Log("key down: " + e.keyCode);
-                    ExecuteEvents.Execute(b, pointerEvent, ExecuteEvents.pointerEnterHandler);
-                    ExecuteEvents.Execute(b, pointerEvent, ExecuteEvents.pointerDownHandler);
-
-                    ButtonPressed(key);
-                    if (!key.pressed)
-                    {
-                        // move key down
-                        b.transform.position += keyTranslation;
-                        key.pressed = true;
-                    }
-                    
-
-                }
-                if (e.type == EventType.keyUp)
-                {
-                    Debug.Log("key up: " + e.keyCode);
-                    ExecuteEvents.Execute(b, pointerEvent, ExecuteEvents.pointerUpHandler);
-                    ExecuteEvents.Execute(b, pointerEvent, ExecuteEvents.pointerExitHandler);
-
-                    b.transform.position -= keyTranslation;
-                    key.pressed = false;
-
-                }
-
-
-            }
-            
-        }
-
-        // caps lock is true while caps lock key is pressed
-        if (e.capsLock && !prevCapsLock)
-        {
-            capsLock = !capsLock;
-            Debug.Log("capsLock = " + capsLock);
-            SetCapsShift(capsLock);
-        }
-        prevCapsLock = e.capsLock;
-
-        // handle shift key
-        if (e.shift)
-        {
-            if (!capsShift)
-            {
-                capsShift = true;
-                Debug.Log("shift down");
-                SetCapsShift(capsLock ? false : true);
-            }
-        }
-        else
-        {
-            if (capsShift)
-            {
-                capsShift = false;
-                Debug.Log("shift up");
-                SetCapsShift(capsLock ? true : false);
-            }
-        }
-    }*/
 }
