@@ -55,6 +55,11 @@ public class VRKeyboard : MonoBehaviour {
 
     private bool prevCapsLock = false;
 
+    public void LoadKeyboard()
+    {
+        m_KeyboardCanvas.SetActive(true);
+    }
+
     class Key
     {
         public string name;             // name displayed on button

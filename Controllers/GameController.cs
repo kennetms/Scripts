@@ -24,6 +24,9 @@ public class GameController : MonoBehaviour
     #endregion
 
     #region Object Associations
+
+    public VRKeyboard m_Keyboard;
+
     //GlobalController Object, needed to add players to the leaderboard.
     private GlobalController m_globalController;
 
@@ -297,7 +300,7 @@ public class GameController : MonoBehaviour
 
         //placing the player in the position to look at the Keyboard & Review panel
         m_player.transform.position = new Vector3(0, 100, 0);
-        m_InterfaceController.SetupKeyboard();
+        m_Keyboard.LoadKeyboard();
     }
 
     /// <summary>
@@ -530,6 +533,6 @@ public class GameController : MonoBehaviour
     public void SetPlayerName(string name)
     {
         m_globalController.AddLeaderboardPlayer(name,m_Score);
-        m_InterfaceController.SetupReviewPanel();
+        m_reviewPanel.LoadReviewPanel();
     }
 }
