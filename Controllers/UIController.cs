@@ -6,8 +6,9 @@ using UnityEngine.UI;
 
 public class UIController : MonoBehaviour {
 
+    #region Object Associations
     //GameController object that keeps track of score, hints, hazard/safety modes, and time
-    public GameController gc;
+    public GameController m_GameController;
 
     //GameObject for our leaderboard entry keyboard
     public GameObject m_KeyboardCanvas;
@@ -17,7 +18,9 @@ public class UIController : MonoBehaviour {
 
     //ReviewPanelManager object that keeps track of the objects that needs to be displayed on the review panel
     public ReviewPanelManager m_ReviewManager;
+    #endregion
 
+    #region Text Objects
     //Text object for our score
     public Text m_scoreText;
 
@@ -32,10 +35,10 @@ public class UIController : MonoBehaviour {
 
     //Text that shows how much score was added or subtracted
     public Text m_plusOrMinus;
+    #endregion
 
     //Amount of time that the plus or minus text displayed
-    public float m_time;
-
+    [SerializeField] private float m_time;
 
     void Start ()
     {
@@ -56,10 +59,12 @@ public class UIController : MonoBehaviour {
     }
 
     /// <summary>
-    /// 
+    /// updates the text of our score changing indicator
     /// </summary>
     private void UpdatePlusOrMinusText()
     {
+        //checking if the text time has expired
+        //if so, reset the text object.
         m_time -= Time.deltaTime;
         if (m_time < 0)
             m_plusOrMinus.text = "";
@@ -70,7 +75,7 @@ public class UIController : MonoBehaviour {
     /// </summary>
     void UpdateScoreText()
     {
-        m_scoreText.text = "Score: " + gc.Score;
+        m_scoreText.text = "Score: " + m_GameController.Score;
     }
 
     /// <summary>
@@ -102,14 +107,14 @@ public class UIController : MonoBehaviour {
     private string ConvertTimeFormat()
     {
         //getting how many seconds & minutes we have
-        int seconds = (int)gc.TimeLeft % 60;
-        int minutes = (int)gc.TimeLeft / 60;
+        int seconds = (int)m_GameController.TimeLeft % 60;
+        int minutes = (int)m_GameController.TimeLeft / 60;
 
         //returning the proper format of the time string
         if(seconds < 10)
             return minutes.ToString() + ":0" + seconds.ToString();       
         else
-        return minutes.ToString() + ":" + seconds.ToString();
+            return minutes.ToString() + ":" + seconds.ToString();
     }
 
     /// <summary>
@@ -127,8 +132,8 @@ public class UIController : MonoBehaviour {
     {
         string updatedText = "Selection Mode: ";
 
-        //m_selectionmode true -> hazard mode
-        if (gc.HazardMode)
+        //Hazardmode true is hazard tag; false is safety.
+        if (m_GameController.HazardMode)
         {
             updatedText += "Hazard";
         }
@@ -145,7 +150,7 @@ public class UIController : MonoBehaviour {
     /// </summary>
     void UpdateHintsText()
     {
-        m_hintText.text = "Hints: " + gc.Hints;
+        m_hintText.text = "Hints: " + m_GameController.Hints;
     }
 
     /// <summary>

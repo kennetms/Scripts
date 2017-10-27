@@ -5,7 +5,6 @@ using UnityEngine.SceneManagement;
 
 public class TutorialBtn : MonoBehaviour
 {
-
     public void tutorialGameBtn(string newGameLvl)
     {
         SceneManager.LoadScene(newGameLvl);

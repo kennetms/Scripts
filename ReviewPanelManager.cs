@@ -3,12 +3,15 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+/// <summary>
+/// Class that handles keeping track of and displaying the review panel.
+/// </summary>
 public class ReviewPanelManager : MonoBehaviour {
 
     /// <summary>
     /// our array of objects that makes up the review panel
     /// </summary>
-    public List<GameObject> reviewPanel;
+    private List<GameObject> reviewPanel;
 
     /// <summary>
     /// the textbox that will display our object's review information
@@ -85,10 +88,12 @@ public class ReviewPanelManager : MonoBehaviour {
         //looping to first object if we're currently displaying the last
         if (currentReviewPos < reviewPanel.Count - 1)
         {
+            //no need to loop
             DisplayReviewPanelObject(++currentReviewPos);
         }
         else
         {
+            //loop to beginning of list
             currentReviewPos = 0;
             DisplayReviewPanelObject(currentReviewPos);
         }
@@ -100,10 +105,12 @@ public class ReviewPanelManager : MonoBehaviour {
         //loop to last object if we're currently displaying the first.
         if (currentReviewPos > 0)
         {
+            //no need to loop
             DisplayReviewPanelObject(--currentReviewPos);
         }
         else
         {
+            //loop to end of list
             currentReviewPos = reviewPanel.Count - 1;
             DisplayReviewPanelObject(currentReviewPos);
         }

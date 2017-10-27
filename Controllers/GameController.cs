@@ -138,6 +138,11 @@ public class GameController : MonoBehaviour
 
         //associate m_player with the OVRPlayerController
         m_player = GameObject.FindObjectOfType<OVRPlayerController>();
+        
+        //Setting our GlobalController Association
+        m_globalController = GlobalController.GetInstance();
+
+        InitializeDifficultySettings();
 
         //randomly spawn the player if the debugging flag is true
         if (RandomizePlayerSpawn)
@@ -145,11 +150,6 @@ public class GameController : MonoBehaviour
             m_SpawnPoints = new List<Vector3>();
             SpawnPlayer();
         }
-
-        //Setting our GlobalController Association
-        m_globalController = GlobalController.GetInstance();
-
-        InitializeDifficultySettings();
 
         //Randomize object spawns if the debugging flag is true
         if (RandomizeObjectSpawn)
@@ -399,7 +399,9 @@ public class GameController : MonoBehaviour
         } while (currCount < maxDisabledItems * randomSpawn && ++i != startPoint - 1);
     }
 
-    ///interact with obj; check validity of interaction and actually execute the interaction.
+    /// <summary>
+    ///     interact with obj; check validity of interaction and actually execute the interaction.
+    /// </summary>
     public void Interact(GameObject obj)
     {
         //getting the ObjectInformation. ObjectInformation should only be placed on objects that
@@ -413,15 +415,14 @@ public class GameController : MonoBehaviour
             Debug.Log("tried to interact with a non-interactable object");
             return;
         }
-        else if(objInfo.interactedWith) //have we already interacted with the object?
+        else if(objInfo.Interacted) //have we already interacted with the object?
         {
             Debug.Log("tried to interact with an object we've already interacted with");
             return;
         }
-        
-        
+
         //update interaction flag.
-        objInfo.interactedWith = true;
+        objInfo.Interact();
         
         //string for comparing tags
         string currentMode = (m_HazardMode) ? "hazard" : "safety";
@@ -474,14 +475,14 @@ public class GameController : MonoBehaviour
         }
 
         //was the object already hinteracted with?
-        if(objInfo.usedHint)
+        if(objInfo.Hinted)
         {
             Debug.Log("Hinted an object that we've already hinted.");
             return;
         }
 
         //we know we can now hint the object, and we will
-        objInfo.usedHint = true;
+        objInfo.Hint();
 
         //add the object to the review panel
         m_reviewPanel.AddReviewPanelObject(obj);
