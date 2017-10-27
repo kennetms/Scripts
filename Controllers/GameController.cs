@@ -6,7 +6,7 @@ using UnityEngine.SceneManagement;
 //using System;
 //using UnityEngine.EventSystems;
 
-public class GameController : MonoBehaviour
+public class GameController : Controller
 {
     #region SpawnPoint Variables
 
@@ -41,12 +41,6 @@ public class GameController : MonoBehaviour
     //user success/failure, or when they've used a hint on an object.
     public OutlineApplier m_OutlineApplier;
 
-    //OVRPlayerController, The GameObject that holds our OVRCameraRig
-    //& input modules, as well as player options
-    public OVRPlayerController m_player;
-
-    //OVRGazePointer, the reticle object we use for our playercontroller
-    public OVRGazePointer m_reticle;
     #endregion
 
     #region Round attributes
@@ -54,37 +48,6 @@ public class GameController : MonoBehaviour
     //flag for distinguishing if the gamecontroller is running the ingame functions
     private bool m_InGame = true;
 
-    //the maximum reach distance for selecting an object.
-    [SerializeField] private float m_MaxDistance;
-
-    //The user's ingame score
-    [SerializeField] private int m_Score;
-
-    //The number of hints remaining
-    [SerializeField] private int m_Hints;
-
-    //flag that tells us the object selection mode
-    //true is hazard mode, false is safety mode.
-    [SerializeField] private bool m_HazardMode;
-
-    /// <summary>
-    /// Time left in the round, displayed on User interface
-    /// Unit is seconds
-    /// </summary>
-    [SerializeField] private float m_timeLeft = 300.0f;
-
-    //Accessor for score
-    public int Score { get { return m_Score; } }
-
-    //Accessor for hints
-    public int Hints { get { return m_Score; } }
-
-    //Accessor for our current mode; True is hazard mode, false is safety mode.
-    public bool HazardMode { get { return m_HazardMode; } }
-
-    //Accessor for remaining time, in seconds
-    public float TimeLeft { get { return m_timeLeft; } }
-    
     #endregion
 
     #region Difficulty Settings
@@ -138,9 +101,6 @@ public class GameController : MonoBehaviour
     void Start ()
     {
         bLayout.SetActive(false);
-
-        //associate m_player with the OVRPlayerController
-        m_player = GameObject.FindObjectOfType<OVRPlayerController>();
         
         //Setting our GlobalController Association
         m_globalController = GlobalController.GetInstance();
@@ -236,27 +196,7 @@ public class GameController : MonoBehaviour
 
             //setting the hazard mode based on trigger presses
             m_HazardMode = OVRInput.GetDown(OVRInput.Button.SecondaryIndexTrigger) ? !m_HazardMode : m_HazardMode;
-
-            #region Raycasting/object interaction code
-            RaycastHit hit;
-            Vector3 reticleScreen = Camera.main.WorldToScreenPoint(m_reticle.transform.position);
-
-            Ray ray = Camera.main.ScreenPointToRay(reticleScreen);//new Ray(m_player.transform.position, m_reticle.transform.position);
-
-            if (OVRInput.GetDown(OVRInput.Button.One)) //pressed the A button
-                if (Physics.Raycast(ray, out hit, m_MaxDistance)) //if we're raycasting onto an object 
-                    Interact(hit.transform.gameObject); //try interacting with the object we raycasted onto
-
-            if (OVRInput.GetDown(OVRInput.Button.Two) && m_Hints > 0) //B button
-            {
-                if (Physics.Raycast(ray, out hit, m_MaxDistance))
-                {
-                    //Get a hint about the object
-                    //and add to review panel
-                    Hinteract(hit.transform.gameObject);
-                }
-            }
-
+            
             if (OVRInput.GetDown(OVRInput.Button.Four)) //pressed the Y button
             {
                 if (bLayout.activeSelf)
@@ -264,7 +204,6 @@ public class GameController : MonoBehaviour
                 else
                     bLayout.SetActive(true);
             }
-            #endregion
 
             //update all of our UI elements
             m_InterfaceController.UpdateUI();

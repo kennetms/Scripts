@@ -50,6 +50,7 @@ public class ReviewPanelManager : MonoBehaviour {
     {
         //initialize the review panel
         InitializeReviewPanel();
+
         //set our review panel canvas to active
         m_ReviewPanelCanvas.SetActive(true);
 

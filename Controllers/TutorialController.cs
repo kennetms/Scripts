@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TutorialController : MonoBehaviour {
+public class TutorialController : Controller {
 
 	// Use this for initialization
 	void Start () {
