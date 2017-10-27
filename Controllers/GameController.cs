@@ -350,21 +350,17 @@ public class GameController : MonoBehaviour
     /// <param name="parent"> The parent for which we are selecting children</param>
     private void ParentSelectChild(GameObject parent)
     {
-            //getting the two children objects
-            GameObject child1 = parent.transform.GetChild(0).gameObject;
-            GameObject child2 = parent.transform.GetChild(1).gameObject;
+        int numChildren = parent.GetNumberChildren();
+        //disable all children of a parent object
+        for(int i = 0; i < numChildren; ++i)
+            parent.GetChild[i].SetActive(false);
 
-            //50/50 chance for one or the other to spawn
-            if (Random.value >= .5)
-            {
-                child1.SetActive(true);
-                child2.SetActive(false);
-            }
-            else
-            {
-                child1.SetActive(false);
-                child2.SetActive(true);
-            }
+        //note random.range is inclusive on the minimum but exclusive on max;
+        //in this case we want numChildren as max and not numChildren - 1.
+        int randVal = Random.Range(0, numChildren);
+
+        //randomly selected child needs to be activated.
+        parent.GetChild[randVal].SetActive(true);
     }
 
     /// <summary>
