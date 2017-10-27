@@ -34,8 +34,8 @@ public class VRKeyboard : MonoBehaviour {
     //Our game controller object
     public GameController m_GameController;
 
-    //the canvas on which the keyboard is displayed
-    public GameObject canvas;
+    //the m_KeyboardCanvas on which the keyboard is displayed
+    public GameObject m_KeyboardCanvas;
 
     //the button prototype in which we will create each individual key
     public GameObject buttonPrototype;
@@ -43,10 +43,10 @@ public class VRKeyboard : MonoBehaviour {
     //The text displaying the user's name above the keyboard
     public Text displayText;
 
-    //the X,Y origin of the keyboard position on the canvas
+    //the X,Y origin of the keyboard position on the m_KeyboardCanvas
     public Vector2 origin;
 
-    //the Key spacing and sizing of each key on the keyboard canvas
+    //the Key spacing and sizing of each key on the keyboard m_KeyboardCanvas
     public Vector2 spacing;
     public Vector3 keyTranslation;
 
@@ -83,7 +83,7 @@ public class VRKeyboard : MonoBehaviour {
         // create button with our button prototype object as a template
         GameObject obj = (GameObject)Object.Instantiate(buttonPrototype);
         obj.name = name;
-        obj.transform.SetParent(canvas.transform, false);
+        obj.transform.SetParent(m_KeyboardCanvas.transform, false);
         obj.GetComponent<RectTransform>().anchoredPosition = pos;
         obj.GetComponent<RectTransform>().SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, spacing.x * scale.x);
         obj.GetComponent<RectTransform>().SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, spacing.y * scale.y);

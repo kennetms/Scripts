@@ -13,6 +13,9 @@ public class ReviewPanelManager : MonoBehaviour {
     /// </summary>
     private List<GameObject> reviewPanel;
 
+    //GameObject for our review panel canvas display
+    public GameObject m_ReviewPanelCanvas;
+
     /// <summary>
     /// the textbox that will display our object's review information
     /// </summary>
@@ -34,7 +37,13 @@ public class ReviewPanelManager : MonoBehaviour {
         reviewPanel.Add(obj);
     }
 
-    public void InitializeReviewPanel()
+    public void LoadReviewPanel()
+    {
+        m_ReviewPanelCanvas.SetActive(true);
+        InitializeReviewPanel();
+    }
+
+    private void InitializeReviewPanel()
     {
         //we need a check for the situation where we have no review panel objects
         if (reviewPanel.Count == 0)
@@ -49,6 +58,7 @@ public class ReviewPanelManager : MonoBehaviour {
         //display the first object
         DisplayReviewPanelObject(currentReviewPos);
     }
+
     private void DisplayReviewPanelObject(int pos)
     {
         //if we're already displaying something, move it out of camera view
@@ -82,7 +92,9 @@ public class ReviewPanelManager : MonoBehaviour {
             DisplayRotation.CenterObject(currentlyDisplayed);
     }
 
-    //going to the next object in the review panel
+    /// <summary>
+    /// going to the next object in the review panel
+    /// </summary>
     public void NextReviewObject()
     {
         //looping to first object if we're currently displaying the last
@@ -99,7 +111,9 @@ public class ReviewPanelManager : MonoBehaviour {
         }
     }
 
-    //backing up to the previous object displayed in the review panel
+    /// <summary>
+    /// backing up to the previous object displayed in the review panel
+    /// </summary>
     public void PreviousReviewObject()
     {
         //loop to last object if we're currently displaying the first.

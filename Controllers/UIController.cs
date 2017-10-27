@@ -9,15 +9,6 @@ public class UIController : MonoBehaviour {
     #region Object Associations
     //GameController object that keeps track of score, hints, hazard/safety modes, and time
     public GameController m_GameController;
-
-    //GameObject for our leaderboard entry keyboard
-    public GameObject m_KeyboardCanvas;
-
-    //GameObject for our review panel canvas display
-    public GameObject m_ReviewPanelCanvas;
-
-    //ReviewPanelManager object that keeps track of the objects that needs to be displayed on the review panel
-    public ReviewPanelManager m_ReviewManager;
     #endregion
 
     #region Text Objects
@@ -156,34 +147,10 @@ public class UIController : MonoBehaviour {
     /// <summary>
     /// Sets up the keyboard after the ingame round is over.
     /// </summary>
-    public void SetupKeyboard()
+    public void DisableUI()
     {
         //disable the ingame UI
-        Canvas UICanvas= m_scoreText.GetComponentInParent<Canvas>();
+        Canvas UICanvas = m_scoreText.GetComponentInParent<Canvas>();
         UICanvas.enabled = false;
-
-        //load our keyboard object
-        LoadKeyboard();
-    }
-
-    /// <summary>
-    /// Activates our keyboard to display for the user
-    /// </summary>
-    private void LoadKeyboard()
-    {
-        m_KeyboardCanvas.SetActive(true);
-    }   
-
-    /// <summary>
-    /// Sets up the review panel after the user is done entering their initials for the leaderboard.
-    /// </summary>
-    public void SetupReviewPanel()
-    {
-        //disabling the keyboard
-        m_KeyboardCanvas.SetActive(false);
-
-        //initializing & enabling the review panel
-        m_ReviewManager.InitializeReviewPanel();
-        m_ReviewPanelCanvas.SetActive(true);
     }
 }
