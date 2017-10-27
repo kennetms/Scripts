@@ -11,10 +11,10 @@ public class GameController : MonoBehaviour
     #region SpawnPoint Variables
 
     //constant SpawnPoints
-    private const Vector3 sp1 = new Vector3(4, 2.5f, 5.5f);
-    private const Vector3 sp2 = new Vector3(11, 2.5f, 16);
-    private const Vector3 sp3 = new Vector3(11, 2.5f, 7);
-    private const Vector3 sp4 = new Vector3(13, 7, 9);
+    private Vector3 sp1 = new Vector3(4, 2.5f, 5.5f);
+    private Vector3 sp2 = new Vector3(11, 2.5f, 16);
+    private Vector3 sp3 = new Vector3(11, 2.5f, 7);
+    private Vector3 sp4 = new Vector3(13, 7, 9);
 
     //A list of spawn points the user can have in scene.
     //this list is constant and should be hardcoded in based on
@@ -80,7 +80,7 @@ public class GameController : MonoBehaviour
     public bool HazardMode { get { return m_HazardMode; } }
 
     //Accessor for remaining time, in seconds
-    public int TimeLeft { get { return m_timeLeft; } }
+    public float TimeLeft { get { return m_timeLeft; } }
     
     #endregion
 
@@ -89,7 +89,7 @@ public class GameController : MonoBehaviour
     private GlobalController.Difficulty difficulty;
 
     [SerializeField] private float m_pointMultiplier;
-
+    
     //the maximum number of objects we can disable before we let the rest spawn;
     //based off of m_difficulty
     private int maxDisabledItems;
@@ -129,29 +129,8 @@ public class GameController : MonoBehaviour
     private GameObject[] parents;
     #endregion
 
-<<<<<<< HEAD
-    //flag for distinguishing if the gamecontroller is running the ingame functions
-    private bool m_InGame = true;
-
-    //A list of spawn points the user can have in scene.
-    //this list is constant and should be hardcoded in based on
-    //where you want valid spawnpoints in the scene to be.
-    private List<Vector3> m_SpawnPoints;
-
-    //the maximum reach distance for selecting an object.
-    public float m_MaxDistance;
-
-    //the player in the scene
-    public OVRPlayerController m_player;
-
-    //Reticle gaze pointer
-    public OVRGazePointer m_reticle;
-
     public GameObject bLayout;
 
-    
-=======
->>>>>>> 35dddcf46e3dff82050108e6c01f050526237546
     // Use this for initialization
     void Start ()
     {
@@ -170,15 +149,6 @@ public class GameController : MonoBehaviour
         //Setting our GlobalController Association
         m_globalController = GlobalController.GetInstance();
 
-        //If our GlobalController hasn't been created yet, The game was not started from the MainMenu.
-        //We'll create a temporary GlobalController; however, this GlobalController won't function properly.
-        if (m_globalController == null)
-        {
-            Debug.LogError("No GlobalController to set GameController difficulty; did you start from the HouseScene?");
-            m_globalController = new GlobalController(GlobalController.Difficulty.Easy, 10);
-            DontDestroyOnLoad(m_globalController);
-        }
-
         InitializeDifficultySettings();
 
         //Randomize object spawns if the debugging flag is true
@@ -192,7 +162,7 @@ public class GameController : MonoBehaviour
     void InitializeDifficultySettings()
     {
         //Set our round difficulty
-        difficulty = m_globalController.m_difficulty;
+        difficulty = m_globalController.difficulty;
 
         //initializing game settings based on m_difficulty
         switch (difficulty)
@@ -464,7 +434,7 @@ public class GameController : MonoBehaviour
         {
             //Apply a green (correct) outline to the object model and add score
             m_OutlineApplier.ApplyGreenOutline(obj);
-            AddScore();
+            AddScore(objInfo.baseScore);
         }
         else
         {
@@ -473,7 +443,16 @@ public class GameController : MonoBehaviour
             
             //as long as we're not on easy, points should be lost for incorrect selection.
             if(difficulty != GlobalController.Difficulty.Easy)
-                SubtractScore();
+                if (difficulty == GlobalController.Difficulty.Medium)
+                {
+                    //if difficulty on medium, only subtract points if wrong hazard/safety mode is on
+                    //i.e. using safety mode on aggressive dog
+                }
+                else
+                {
+                    //if difficulty on hard, points should be lost no matter what.
+                    SubtractScore(objInfo.baseScore);
+                }
         }
         
         //Regardless of if it was correct or not, the object should be added to the review panel.
@@ -514,13 +493,15 @@ public class GameController : MonoBehaviour
         --m_Hints;
     }
 
-    /**
+    
     //The harder or less obvious it is to spot the object, the higher the base score
     //The base score is then modified by the difficulty modifier; harder difficulty gives less points
     public void AddScore(int baseScore)
     {
         //base score * difficulty multiplier = final score to add
-        m_Score += Math.Ceil(baseScore * difficultyMultiplier);
+        int score = (int)Mathf.Ceil(baseScore * m_pointMultiplier);
+        m_InterfaceController.DisplayPlusOrMinusText(score);
+        m_Score += score;
     }
 
     //the object was harder to spot, and has a higher base score; we want to subtract less for higher base scores,
@@ -529,10 +510,12 @@ public class GameController : MonoBehaviour
     {
         //doing 100-base score in the numerator gives less penalty for objects that were harder to spot.
         //1 - difficulty multiplier gives less penalty for medium difficulty, which has a larger difficulty multiplier than hard.
-        m_Score -= Math.Ceil((100 - baseScore) * (1 - difficultyMultiplier));
-    }*/
+        int score = (int)Mathf.Ceil((100 - baseScore) * (1 - m_pointMultiplier));
+        m_InterfaceController.DisplayPlusOrMinusText(-score);
+        m_Score -= score;
+    }
 
-    public void AddScore()
+    /*public void AddScore()
     {
         int score = (int)Mathf.Ceil(100 * m_pointMultiplier);
         m_InterfaceController.DisplayPlusOrMinusText(score);
@@ -544,7 +527,7 @@ public class GameController : MonoBehaviour
         int score = (int)Mathf.Ceil(100 * m_pointMultiplier);
         m_InterfaceController.DisplayPlusOrMinusText(-score);
         m_Score -= score;
-    }
+    }*/
 
     //setup review panel and current player's name and score to the leaderboard
     public void SetPlayerName(string name)

@@ -26,31 +26,36 @@ public class LeaderboardManager : MonoBehaviour {
         //setting our relation to global controller and getting our m_difficulty.
         m_globalController = global.GetComponent<GlobalController>();
 
-        SetLeaderBoardText();
+        SetupLeaderboard();
     }
 
-    public void SetLeaderBoardText()
+    public void SetupLeaderboard()
     {
-        m_EasyText.text = m_MediumText.text = m_HardText.text = m_CombinedText.text = "";
-        foreach (GlobalController.PlayerInfo player in GlobalController.easyLeaderboard)
+        SetupSingleLeaderboard(m_EasyText,GlobalController.easyLeaderboard);
+        SetupSingleLeaderboard(m_MediumText, GlobalController.mediumLeaderboard);
+        SetupSingleLeaderboard(m_HardText, GlobalController.hardLeaderboard);
+        SetupSingleLeaderboard(m_CombinedText, GlobalController.combinedLeaderboard,true);
+    }
+
+    private void SetupSingleLeaderboard(Text leaderboardText, GlobalController.PlayerInfo[] leaderboard, bool combinedLeaderboard = false)
+    {
+        if(!combinedLeaderboard)
         {
-            if (player != null)
-                m_EasyText.text += player.name + " : " + player.score + "\n";
+            leaderboardText.text = "";
+            foreach (GlobalController.PlayerInfo player in leaderboard)
+            {
+                if (player != null)
+                    leaderboardText.text += player.name + " : " + player.score + " (" + player.difficulty + ")" + "\n";
+            }
         }
-        foreach (GlobalController.PlayerInfo player in GlobalController.mediumLeaderboard)
+        else
         {
-            if (player != null)
-                m_MediumText.text += player.name + " : " + player.score + "\n";
+            foreach (GlobalController.PlayerInfo player in GlobalController.combinedLeaderboard)
+            {
+                if (player != null)
+                    m_CombinedText.text += player.name + " : " + player.score + " (" + player.difficulty + ")" + "\n";
+            }
         }
-        foreach (GlobalController.PlayerInfo player in GlobalController.hardLeaderboard)
-        {
-            if (player != null)
-                m_HardText.text += player.name + " : " + player.score + "\n";
-        }
-        foreach (GlobalController.PlayerInfo player in GlobalController.combinedLeaderboard)
-        {
-            if (player != null)
-                m_CombinedText.text += player.name + " : " + player.score + " (" + player.difficulty + ")" +  "\n";
-        }
+
     }
 }

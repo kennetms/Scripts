@@ -11,5 +11,5 @@ public class ObjectInformation : MonoBehaviour {
     public bool usedHint = false;
 
     //float for the baseScore of the object, depending on how visible/hidden an object is in scene. 1-99
-    public float baseScore;
+    public int baseScore;
 }

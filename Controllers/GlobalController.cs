@@ -8,6 +8,7 @@ public class GlobalController : MonoBehaviour {
     //the name of the scene to switch to after difficulty is selected
     const string HouseScene = "HouseScene";
 
+    #region Leaderboard
     //the array of players in the leaderboard
     public static PlayerInfo[] easyLeaderboard;
 
@@ -16,17 +17,18 @@ public class GlobalController : MonoBehaviour {
     public static PlayerInfo[] hardLeaderboard;
 
     public static PlayerInfo[] combinedLeaderboard;
-
-    private static bool m_created;
+    #endregion
 
     private static GlobalController m_Instance;
 
     public enum Difficulty { Easy = 1, Medium = 2, Hard = 3 };
 
     //the max number of players in the leaderboard
-    public int maxLeaderboardSize = 10;
+    private int maxLeaderboardSize;
 
-    public Difficulty m_difficulty;
+    private Difficulty m_difficulty;
+
+    public Difficulty difficulty { get { return m_difficulty; } }
 
     //the class that describes a player's information in the leaderboard
     //consists of a name, score, and the difficulty in which they played
@@ -40,43 +42,48 @@ public class GlobalController : MonoBehaviour {
         { score = s; name = n; difficulty = d; }
     }
 
+    private GlobalController() { }
+
     //Static function for getting the instance of the GlobalController
-    public static GlobalController GetInstance() { return m_Instance; }
+    public static GlobalController GetInstance()
+    {
+        if (m_Instance == null)
+        {
+            m_Instance = new GlobalController(Difficulty.Easy, 10);
+        }
+        return m_Instance;
+    }
 
     void Start()
     {
+        maxLeaderboardSize = 10;
+
         //Check if our GlobalController has been created already
-        if (m_created)
+        if (m_Instance != null)
         {
             //we want to reset our GlobalController to its state in the MainMenu,
             //so we delete our current instance and use the one instantiated by the MainMenu.
-            if (m_Instance != null)
-                Destroy(m_Instance);
+            Destroy(m_Instance);
 
             m_Instance = this;
         }
         else
         {
-            m_created = true;
             m_Instance = this;
             //initialize our leaderboard
-            easyLeaderboard = new PlayerInfo[10];
-            if (easyLeaderboard[0] == null)
-            {
-                Debug.LogError("Working FIne");
-            }
-            mediumLeaderboard = new PlayerInfo[10];
-            hardLeaderboard = new PlayerInfo[10];
-            combinedLeaderboard = new PlayerInfo[10];
+            easyLeaderboard = new PlayerInfo[maxLeaderboardSize];
+            mediumLeaderboard = new PlayerInfo[maxLeaderboardSize];
+            hardLeaderboard = new PlayerInfo[maxLeaderboardSize];
+            combinedLeaderboard = new PlayerInfo[maxLeaderboardSize];
         }
-
     }
+
     /// <summary>
     /// Constructor for instantiation from HouseScene
     /// </summary>
     /// <param name="diff">the difficulty for the current round</param>
     /// <param name="maxLBSize">maximum number of players in the leaderboard</param>
-    public GlobalController(Difficulty diff, int maxLBSize)
+    private GlobalController(Difficulty diff, int maxLBSize)
     {
         m_difficulty = diff;
         maxLeaderboardSize = maxLBSize;
@@ -85,7 +92,6 @@ public class GlobalController : MonoBehaviour {
         mediumLeaderboard = new PlayerInfo[maxLeaderboardSize];
         hardLeaderboard = new PlayerInfo[maxLeaderboardSize];
         combinedLeaderboard = new PlayerInfo[maxLeaderboardSize];
-        m_created = true;
         m_Instance = this;
     }
 
