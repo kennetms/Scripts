@@ -4,13 +4,14 @@ using UnityEngine;
 
 public class Controller : MonoBehaviour
 {
+    /// the object that applies outlines to interacted GameObjects
     protected OutlineApplier m_OutlineApplier;
 
-    //OVRPlayerController, The GameObject that holds our OVRCameraRig
-    //& input modules, as well as player options
+    ///OVRPlayerController, The GameObject that holds our OVRCameraRig
+    ///& input modules, as well as player options
     public OVRPlayerController m_player;
 
-    //OVRGazePointer, the reticle object we use for our playercontroller
+    ///OVRGazePointer, the reticle object we use for our playercontroller
     public OVRGazePointer m_reticle;
     
     #region Game Attributes
@@ -46,6 +47,9 @@ public class Controller : MonoBehaviour
     public float TimeLeft { get { return m_timeLeft; } }
     #endregion
 
+    /// <summary>
+    /// Used for initialization
+    /// </summary>
     protected virtual void Start()
     {
         //associate m_player with the OVRPlayerController
@@ -54,6 +58,9 @@ public class Controller : MonoBehaviour
         m_MaxDistance = 1.5f;
     }
 
+    /// <summary>
+    /// update every frame
+    /// </summary>
     protected virtual void Update()
     {
         //If the a button was pressed
@@ -83,7 +90,7 @@ public class Controller : MonoBehaviour
     /// <summary>
     /// Shoots a raycast into the scene from our reticle
     /// </summary>
-    /// <returns></returns>
+    /// <returns>The GameObject we hit with our raycast, null otherwise</returns>
     protected GameObject Raycast()
     {
         //Getting the point on our screen of the reticle
@@ -99,7 +106,7 @@ public class Controller : MonoBehaviour
 
     /// <summary>
     /// interact with obj; check validity of interaction and actually execute the interaction.
-    /// </summary>
+    /// </summary>    
     public virtual void Interact(GameObject obj)
     {
         //getting the ObjectInformation. ObjectInformation should only be placed on objects that
@@ -143,6 +150,10 @@ public class Controller : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Hints an object
+    /// </summary>
+    /// <param name="obj">the object to try to hint</param>
     public virtual void Hinteract(GameObject obj)
     {
         //getting the ObjectInformation. ObjectInformation should only be placed on objects that
@@ -174,11 +185,19 @@ public class Controller : MonoBehaviour
         --m_Hints;
     }
 
+    /// <summary>
+    /// Add a score after selecting an object correctly
+    /// </summary>
+    /// <param name="baseScore">the baseScore of the object</param>
     protected virtual void AddScore(int baseScore)
     {
         m_Score += baseScore;
     }
 
+    /// <summary>
+    /// Subtract score after selecting an object incorrectly
+    /// </summary>
+    /// <param name="baseScore">the baseScore of the object</param>
     protected virtual void SubtractScore(int baseScore)
     {
         m_Score -= baseScore;
