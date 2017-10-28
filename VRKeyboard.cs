@@ -31,51 +31,79 @@ using UnityEngine.SceneManagement;
 
 public class VRKeyboard : MonoBehaviour {
 
-    //Our game controller object
+    ///Our game controller object
     public GameController m_GameController;
 
-    //the m_KeyboardCanvas on which the keyboard is displayed
+    ///the m_KeyboardCanvas on which the keyboard is displayed
     public GameObject m_KeyboardCanvas;
 
-    //the button prototype in which we will create each individual key
+    ///the button prototype in which we will create each individual key
     public GameObject buttonPrototype;
 
-    //The text displaying the user's name above the keyboard
+    ///The text displaying the user's name above the keyboard
     public Text displayText;
 
-    //the X,Y origin of the keyboard position on the m_KeyboardCanvas
+    ///the X,Y origin of the keyboard position on the m_KeyboardCanvas
     public Vector2 origin;
 
-    //the Key spacing and sizing of each key on the keyboard m_KeyboardCanvas
+    ///the Key spacing and sizing of each key on the keyboard m_KeyboardCanvas
     public Vector2 spacing;
-    public Vector3 keyTranslation;
 
+    //public Vector3 keyTranslation;
+
+    ///flag to tell us if we're in caps mode or not
     public bool capsShift = false;
-    public bool capsLock = false;
 
-    private bool prevCapsLock = false;
-
+    /// <summary>
+    /// Loads the keyboard to be displayed
+    /// </summary>
     public void LoadKeyboard()
     {
         enabled = true;
         m_KeyboardCanvas.SetActive(true);
     }
 
+    /// <summary>
+    /// A class to contain all the information we need to know about a key on the keyboard
+    /// </summary>
     class Key
     {
-        public string name;             // name displayed on button
+        //the name of the key
+        public string name;
+
+        //the lowercase character
         public string character;
+
+        //uppercase character
         public string shiftedCharacter;
+
+        //the Keycode of this key
         public KeyCode code;
+
+        //the button the key uses
         public GameObject button;
         public bool pressed;
+
+        //flag to indicate special keys (backspace,enter,spacebar,shift)
         public bool special;
     };
 
+    ///the list of all keys on the keyboard
     List<Key> keys;
-    Dictionary<KeyCode, Key> keyCodeToKey = new Dictionary<KeyCode, Key>(); // map from key codes to keys
 
-    // create a single key
+    ///map from key codes to keys
+    Dictionary<KeyCode, Key> keyCodeToKey = new Dictionary<KeyCode, Key>(); 
+
+    /// <summary>
+    /// Creates a single key
+    /// </summary>
+    /// <param name="name">the name of the key</param>
+    /// <param name="_char">the lowercase character of the key</param>
+    /// <param name="shiftedChar">the uppercase character of the key</param>
+    /// <param name="code">the Keycode of the key</param>
+    /// <param name="pos">the position on the keyboard we will offset by</param>
+    /// <param name="scale">the scaling of the specific key</param>
+    /// <param name="special">flag to tell us if we have a special key, such as backspace, spacebar, enter, or shift</param>
     void CreateKey(string name, string _char, string shiftedChar, KeyCode code, Vector2 pos, Vector2 scale, bool special=false)
     {
         Key key = new Key();
@@ -104,7 +132,14 @@ public class VRKeyboard : MonoBehaviour {
         keyCodeToKey.Add(code, key);
     }
 
-    // create a row of keys
+    /// <summary>
+    /// creates a row of keys
+    /// </summary>
+    /// <param name="chars">the continuous string of lowercase characters which we want to create keys for</param>
+    /// <param name="shiftedChars">the continuous string of uppercase characters which we want to create keys for</param>
+    /// <param name="codes">the array of keycodes to map keycodes to the strings of characters to create</param>
+    /// <param name="pos">the posion on the keyboard by which we will offset to place the key</param>
+    /// <param name="offset">the offset by which we space each key</param>
     void CreateKeyRow(string chars, string shiftedChars, KeyCode[] codes, Vector2 pos, float offset)
     {
         pos.x += offset*spacing.x;
@@ -115,55 +150,88 @@ public class VRKeyboard : MonoBehaviour {
         }
     }
 
-    // create a whole keyboard
+    /// <summary>
+    /// Creates the whole keyboard
+    /// </summary>
     void CreateKeyboard()
     {
         keys = new List<Key>();
 
         Vector2 pos = origin;
 
+        //create the first row of our keyboard; 1234567890-= lowercase, !@#$%^&*()_+ uppercase
         CreateKeyRow(
             "1234567890-=",
             "!@#$%^&*()_+",
-            new KeyCode[] { KeyCode.Alpha1, KeyCode.Alpha2, KeyCode.Alpha3, KeyCode.Alpha4, KeyCode.Alpha5, KeyCode.Alpha6, KeyCode.Alpha7, KeyCode.Alpha8, KeyCode.Alpha9, KeyCode.Alpha0, KeyCode.Minus, KeyCode.Equals },
+            new KeyCode[] {
+                KeyCode.Alpha1, KeyCode.Alpha2, KeyCode.Alpha3,
+                KeyCode.Alpha4, KeyCode.Alpha5, KeyCode.Alpha6,
+                KeyCode.Alpha7, KeyCode.Alpha8, KeyCode.Alpha9,
+                KeyCode.Alpha0, KeyCode.Minus, KeyCode.Equals },
             pos,
             0.0f
-        );
+            );
+
+        //create the special key backspace at the end of the keyrow we just created
         CreateKey("Bksp", "\b", "\b", KeyCode.Backspace, pos + new Vector2(spacing.x * 12.5f, 0.0f), new Vector2(2.0f, 1.0f), true);
-        //increments our next row spacing for y to be below this row
+
+        //increment our next row spacing for y to be below the previous row we created
         pos.y -= spacing.y;
 
+        //create the second row of our keyboard
         CreateKeyRow(
             "qwertyuiop[]",
             "QWERTYUIOP{}",
-            new KeyCode[] { KeyCode.Q, KeyCode.W, KeyCode.E, KeyCode.R, KeyCode.T, KeyCode.Y, KeyCode.U, KeyCode.I, KeyCode.O, KeyCode.P, KeyCode.LeftBracket, KeyCode.RightBracket },
+            new KeyCode[] {
+                KeyCode.Q, KeyCode.W, KeyCode.E,
+                KeyCode.R, KeyCode.T, KeyCode.Y,
+                KeyCode.U, KeyCode.I, KeyCode.O,
+                KeyCode.P, KeyCode.LeftBracket, KeyCode.RightBracket },
             pos,
             0.5f
         );
+
+        //create the special key enter at the end of the keyrow we just created
         CreateKey("Enter", "\r", "\r", KeyCode.Return, pos + new Vector2(spacing.x * 12.85f, -spacing.y * 0.5f), new Vector2(1.3f, 2.0f), true);
 
+        //increment y spacing
         pos.y -= spacing.y;
 
+        //create the third row of our keyboard
         CreateKeyRow(
             "asdfghjkl;'\\",
             "ASDFGHJKL:\"||",
-            new KeyCode[] { KeyCode.A, KeyCode.S, KeyCode.D, KeyCode.F, KeyCode.G, KeyCode.H, KeyCode.J, KeyCode.K, KeyCode.L, KeyCode.Semicolon, KeyCode.Quote, KeyCode.Backslash },
+            new KeyCode[] {
+                KeyCode.A, KeyCode.S, KeyCode.D,
+                KeyCode.F, KeyCode.G, KeyCode.H,
+                KeyCode.J, KeyCode.K, KeyCode.L,
+                KeyCode.Semicolon, KeyCode.Quote, KeyCode.Backslash },
             pos,
             0.7f
             );
+
+        //increment y spacing
         pos.y -= spacing.y;
 
+        //create the fourth row of our keyboard
         CreateKeyRow(
             "zxcvbnm,./",
             "ZXCVBNM<>?",
-            new KeyCode[] { KeyCode.Z, KeyCode.X, KeyCode.C, KeyCode.V, KeyCode.B, KeyCode.N, KeyCode.M, KeyCode.Comma, KeyCode.Period, KeyCode.Slash},
+            new KeyCode[] {
+                KeyCode.Z, KeyCode.X, KeyCode.C,
+                KeyCode.V, KeyCode.B, KeyCode.N,
+                KeyCode.M, KeyCode.Comma, KeyCode.Period, KeyCode.Slash },
             pos,
             1.0f
             );
+
+        //create the special key shift at the end of the keyrow we just created
         CreateKey("Shift", "", "", KeyCode.RightShift, pos + new Vector2(spacing.x * 12.0f, 0.0f), new Vector2(3.0f, 1.0f), true);
 
+        //increment y spacing
         pos.y -= spacing.y;
 
+        //create the special key spacebar at the bottom of the keyboard
         CreateKey("Space", " ", " ", KeyCode.Space, pos + new Vector2(spacing.x * 5.5f, 0.0f), new Vector2(6.0f, 1.0f), true);
     }
 
@@ -176,7 +244,10 @@ public class VRKeyboard : MonoBehaviour {
         enabled = false;
     }
 
-    // insert text into input field when button is pressed
+    /// <summary>
+    /// Handle when a key is pressed; insert text into input field
+    /// </summary>
+    /// <param name="key">the key that was pressed</param>
     void ButtonPressed(Key key)
     {
         //partially fixes the double click problem
@@ -184,18 +255,42 @@ public class VRKeyboard : MonoBehaviour {
         key.button.GetComponent<Button>().interactable = true;
 
         //we need a displayText object to display what the user has entered so far.
-        if(displayText == null)
+        if (displayText == null)
         {
             Debug.LogError("No Display Text object to display user's name on.");
             return;
         }
 
+        switch (key.code)
+        {
+            case KeyCode.Return:
+                m_GameController.SetPlayerName(displayText.text);
+                break;
+
+            case KeyCode.Backspace:
+                //if we have a character to backspace, delete it.
+                if (displayText.text.Length > 0)
+                    displayText.text = displayText.text.Substring(0, displayText.text.Length - 1);
+                break;
+
+            case KeyCode.RightShift:
+                SetCapsShift();
+                break;
+
+            default:
+                //do we have less than 3 characters in the name currently?
+                //if true then we can add another character.
+                if (displayText.text.Length < 3)
+                    displayText.text += capsShift ? key.shiftedCharacter : key.character;
+                break;
+        }
+        /**
         if (key.code == KeyCode.Return)
         {
             /**submit event data
              * var submittedEvent = new BaseEventData(EventSystem.current);
              * ExecutedEvents.Execute(inputField, submitEvent, ExectueEvents.submitHandler);
-             **/
+             **
             //The user entered their name, so we want to enter in our GlobalController that information, then switch the scene.
             m_GameController.SetPlayerName(displayText.text);
         }
@@ -208,11 +303,11 @@ public class VRKeyboard : MonoBehaviour {
         {
             SetCapsShift();
         }
-        else if(displayText.text.Length < 3) //do we have 3 or less characters?
+        else if(displayText.text.Length < 3)
         {
             //if <3 characters, we can add another initial to their name.
             displayText.text += capsShift ? key.shiftedCharacter : key.character;
-        }
+        }*/
     }
 
     /// <summary>
@@ -223,14 +318,12 @@ public class VRKeyboard : MonoBehaviour {
         //switch our capsShift
         capsShift = !capsShift;
 
-        //iterate through each key and switch its case displayed.
+        //iterate through each key and switch the key (button) displayed case.
         foreach(var k in keys)
         {
             //if our key isn't a special key, we can switch its case.
             if (!k.special)
-            {
                 k.button.GetComponentInChildren<Text>().text = capsShift ? k.shiftedCharacter : k.character;
-            }
         }
     }
 }

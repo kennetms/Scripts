@@ -27,6 +27,9 @@ public class ReviewPanelManager : MonoBehaviour {
     //the GameObject being displayed on the review panel currently. 
     private GameObject currentlyDisplayed;
 
+    /// <summary>
+    /// Used for initialization
+    /// </summary>
     void Start()
     {
         m_ReviewPanelCanvas.SetActive(false);
@@ -57,6 +60,10 @@ public class ReviewPanelManager : MonoBehaviour {
         enabled = true;
     }
 
+    /// <summary>
+    /// Initializes the review panel by initalizing the displaying of objects and information,
+    /// starting with the first object added to the review panel.
+    /// </summary>
     private void InitializeReviewPanel()
     {
         //we need a check for the situation where we have no review panel objects
@@ -73,14 +80,19 @@ public class ReviewPanelManager : MonoBehaviour {
         DisplayReviewPanelObject(currentReviewPos);
     }
 
-    private void DisplayReviewPanelObject(int pos)
+
+    /// <summary>
+    /// Displays the review panel object in the review panel array at index index.
+    /// </summary>
+    /// <param name="index">the index of the object in the review panel to display</param>
+    private void DisplayReviewPanelObject(int index)
     {
         //if we're already displaying something, move it out of camera view
         if(currentlyDisplayed != null)
             currentlyDisplayed.transform.position = new Vector3(0, 0, 0);
 
         //the GameObject we're displaying
-        currentlyDisplayed = reviewPanel[pos];
+        currentlyDisplayed = reviewPanel[index];
         Collider objColl = currentlyDisplayed.GetComponent<Collider>();
         if (objColl != null)
             objColl.enabled = false;
