@@ -32,7 +32,9 @@ using UnityEngine.SceneManagement;
 public class VRKeyboard : MonoBehaviour {
 
     ///Our game controller object
-    public GameController m_GameController;
+    //public GameController m_GameController;
+
+    public TransitionManager m_TransitionManager;
 
     ///the m_KeyboardCanvas on which the keyboard is displayed
     public GameObject m_KeyboardCanvas;
@@ -273,7 +275,11 @@ public class VRKeyboard : MonoBehaviour {
         {
             //on enter, we want the gamecontroller to set the player name
             case KeyCode.Return:
-                m_GameController.SetPlayerName(displayText.text);
+                //Get the global controller instance so we can set the current player's name
+                GlobalController.GetInstance().SetPlayerName(m_displayText.text);
+
+                //now that we've entered the name we want to switch to the review panel.
+                m_TransitionManager.TransitionToReviewPanel();
                 break;
 
             //on backspace, delete a character

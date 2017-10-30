@@ -25,6 +25,8 @@ public class GameController : Controller
 
     #region Object Associations
 
+    public TransitionManager m_TransitionManager;
+
     public VRKeyboard m_Keyboard;
 
     //GlobalController Object, needed to add players to the leaderboard.
@@ -248,8 +250,8 @@ public class GameController : Controller
         //since the round is over, we no longer need the ingame UI, so we disable it
         m_InterfaceController.DisableUI();
 
-        //Load the keyboard for the user to enter their name for the leaderboard.
-        m_Keyboard.LoadKeyboard();
+        m_globalController.SetPlayerScore(m_score);
+        m_TransitionManager.TransitionToKeyboard();
     }
 
     /// <summary>
@@ -481,37 +483,5 @@ public class GameController : Controller
         int score = (int)Mathf.Ceil((100 - baseScore) * (1 - m_pointMultiplier));
         m_InterfaceController.DisplayPlusOrMinusText(-score);
         m_Score -= score;
-    }
-
-    /*public void AddScore()
-    {
-        int score = (int)Mathf.Ceil(100 * m_pointMultiplier);
-        m_InterfaceController.DisplayPlusOrMinusText(score);
-        m_Score += score;
-    }
-
-    public void SubtractScore()
-    {
-        int score = (int)Mathf.Ceil(100 * m_pointMultiplier);
-        m_InterfaceController.DisplayPlusOrMinusText(-score);
-        m_Score -= score;
-    }*/
-
-    //setup review panel and current player's name and score to the leaderboard
-
-    /// <summary>
-    /// Set the player's name & score to add a leaderboard player
-    /// </summary>
-    /// <param name="name">The player's name to add to the leaderboard</param>
-    public void SetPlayerName(string name)
-    {
-        //add the player name & score to the leaderboard
-        m_globalController.AddLeaderboardPlayer(name,m_Score);
-
-        //we're done with keyboard interaction, so disable the keyboard.
-        m_Keyboard.DisableKeyboard();
-
-        //now load the review panel to display objects select throughout the round
-        m_reviewPanel.LoadReviewPanel();
     }
 }
