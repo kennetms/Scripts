@@ -152,6 +152,8 @@ public class UIController : MonoBehaviour {
         //disable the ingame UI
         Canvas UICanvas = m_scoreText.GetComponentInParent<Canvas>();
         UICanvas.enabled = false;
+
+        //setting our MonoBehavior's enabled flag to false stops our UIController from having Update() called.
         enabled = false;
     }
 }

@@ -63,18 +63,16 @@ public class VRKeyboard : MonoBehaviour {
         m_KeyboardCanvas.SetActive(true);
     }
 
-<<<<<<< HEAD
     public void DisableKeyboard()
     {
         m_KeyboardCanvas.SetActive(false);
         enabled = false;
     }
 
-=======
     /// <summary>
     /// A class to contain all the information we need to know about a key on the keyboard
     /// </summary>
->>>>>>> 5eee0a3c49ff0ec6f1d1ed36d4e59e07669ba356
+
     class Key
     {
         //the name of the key
@@ -270,22 +268,27 @@ public class VRKeyboard : MonoBehaviour {
             return;
         }
 
+        //deciding which key was pressed
         switch (key.code)
         {
+            //on enter, we want the gamecontroller to set the player name
             case KeyCode.Return:
                 m_GameController.SetPlayerName(displayText.text);
                 break;
 
+            //on backspace, delete a character
             case KeyCode.Backspace:
                 //if we have a character to backspace, delete it.
                 if (displayText.text.Length > 0)
                     displayText.text = displayText.text.Substring(0, displayText.text.Length - 1);
                 break;
 
+            //on shift, set caps on the keyboard
             case KeyCode.RightShift:
                 SetCapsShift();
                 break;
 
+            //default case is just a nonspecial character or spacebar.
             default:
                 //do we have less than 3 characters in the name currently?
                 //if true then we can add another character.

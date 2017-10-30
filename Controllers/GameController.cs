@@ -184,6 +184,9 @@ public class GameController : Controller
         m_player.ResetOrientation();
     }
 
+    /// <summary>
+    /// The overrided update function for GameController
+    /// </summary>
     override protected void Update()
     {
         //only update our UI & raycast if we're still in game
@@ -195,9 +198,8 @@ public class GameController : Controller
             //setting the hazard mode based on trigger presses
             m_HazardMode = OVRInput.GetDown(OVRInput.Button.SecondaryIndexTrigger) ? !m_HazardMode : m_HazardMode;
 
-            //handles raycasting
+            //Controller.Update handles raycasting each frame, since all controllers require raycasting.
             base.Update();
-
 
             if (OVRInput.GetDown(OVRInput.Button.Four)) //pressed the Y button
             {
@@ -243,7 +245,10 @@ public class GameController : Controller
         //placing the player in the position to look at the Keyboard & Review panel
         m_player.transform.position = new Vector3(0, 100, 0);
 
+        //since the round is over, we no longer need the ingame UI, so we disable it
         m_InterfaceController.DisableUI();
+
+        //Load the keyboard for the user to enter their name for the leaderboard.
         m_Keyboard.LoadKeyboard();
     }
 
@@ -352,8 +357,9 @@ public class GameController : Controller
     }
 
     /// <summary>
-    ///     interact with obj; check validity of interaction and actually execute the interaction.
+    /// interact with obj; check validity of interaction and actually execute the interaction.
     /// </summary>
+    /// <param name="obj">The object we're interacting with</param>
     public override void Interact(GameObject obj)
     {
         //getting the ObjectInformation. ObjectInformation should only be placed on objects that
@@ -412,6 +418,10 @@ public class GameController : Controller
         m_reviewPanel.AddReviewPanelObject(obj);
     }
 
+    /// <summary>
+    /// Hint interaction with an object
+    /// </summary>
+    /// <param name="obj">The object we're trying to hint</param>
     public override void Hinteract(GameObject obj)
     {
         //getting the ObjectInformation. ObjectInformation should only be placed on objects that
@@ -446,8 +456,11 @@ public class GameController : Controller
         --m_Hints;
     }
 
-    //The harder or less obvious it is to spot the object, the higher the base score
-    //The base score is then modified by the difficulty modifier; harder difficulty gives less points
+    /// <summary>
+    /// The harder or less obvious it is to spot the object, the higher the base score
+    /// The base score is then modified by the difficulty modifier; harder difficulty gives less points
+    /// </summary>
+    /// <param name="baseScore">The base score the selected object had related to it</param>
     protected override void AddScore(int baseScore)
     {
         //base score * difficulty multiplier = final score to add
@@ -456,8 +469,11 @@ public class GameController : Controller
         m_Score += score;
     }
 
-    //the object was harder to spot, and has a higher base score; we want to subtract less for higher base scores,
-    //since base scores consider object selection difficulty.
+    /// <summary>
+    /// the object was harder to spot, and has a higher base score; we want to subtract less for higher base scores,
+    /// since base scores consider object selection difficulty.
+    /// </summary>
+    /// <param name="baseScore">The base score the selected object had related to it</param>
     protected override void SubtractScore(int baseScore)
     {
         //doing 100-base score in the numerator gives less penalty for objects that were harder to spot.
@@ -482,10 +498,20 @@ public class GameController : Controller
     }*/
 
     //setup review panel and current player's name and score to the leaderboard
+
+    /// <summary>
+    /// Set the player's name & score to add a leaderboard player
+    /// </summary>
+    /// <param name="name">The player's name to add to the leaderboard</param>
     public void SetPlayerName(string name)
     {
+        //add the player name & score to the leaderboard
         m_globalController.AddLeaderboardPlayer(name,m_Score);
+
+        //we're done with keyboard interaction, so disable the keyboard.
         m_Keyboard.DisableKeyboard();
+
+        //now load the review panel to display objects select throughout the round
         m_reviewPanel.LoadReviewPanel();
     }
 }

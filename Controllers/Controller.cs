@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class Controller : MonoBehaviour
 {
+
+    #region Object associations
     /// the object that applies outlines to interacted GameObjects
     protected OutlineApplier m_OutlineApplier;
 
@@ -13,7 +15,8 @@ public class Controller : MonoBehaviour
 
     ///OVRGazePointer, the reticle object we use for our playercontroller
     public OVRGazePointer m_reticle;
-    
+    #endregion
+
     #region Game Attributes
     //the maximum distance for which we can raycast
     private float m_MaxDistance;
