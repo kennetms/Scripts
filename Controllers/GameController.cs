@@ -242,6 +242,8 @@ public class GameController : Controller
 
         //placing the player in the position to look at the Keyboard & Review panel
         m_player.transform.position = new Vector3(0, 100, 0);
+
+        m_InterfaceController.DisableUI();
         m_Keyboard.LoadKeyboard();
     }
 
@@ -316,6 +318,7 @@ public class GameController : Controller
     /// <param name="randomSpawn">The probability an object will be disabled</param>
     void RandomDisable(GameObject[] objects, float randomSpawn)
     {
+        List<int> positionsToDestroy = new List<int>();
         int currCount = 0;
 
         //starting point for object array selection, disabling or leaving enabled
@@ -334,10 +337,18 @@ public class GameController : Controller
             //disabling object randomly
             if (Random.value > randomSpawn)
             {
+                if(objects[i].tag == "innoc")
+                    positionsToDestroy.Add(i);
                 objects[i].SetActive(false);
                 ++currCount;
             }
         } while (currCount < maxDisabledItems * randomSpawn && ++i != startPoint - 1);
+
+        if(objects[0].tag == "innoc")
+        {
+            foreach (int pos in positionsToDestroy)
+                Destroy(objects[pos]);
+        }
     }
 
     /// <summary>
@@ -474,6 +485,7 @@ public class GameController : Controller
     public void SetPlayerName(string name)
     {
         m_globalController.AddLeaderboardPlayer(name,m_Score);
+        m_Keyboard.DisableKeyboard();
         m_reviewPanel.LoadReviewPanel();
     }
 }

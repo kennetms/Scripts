@@ -61,6 +61,12 @@ public class VRKeyboard : MonoBehaviour {
         m_KeyboardCanvas.SetActive(true);
     }
 
+    public void DisableKeyboard()
+    {
+        m_KeyboardCanvas.SetActive(false);
+        enabled = false;
+    }
+
     class Key
     {
         public string name;             // name displayed on button
