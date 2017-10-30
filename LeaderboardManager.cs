@@ -3,28 +3,42 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+/// <summary>
+/// Class that manages 
+/// </summary>
 public class LeaderboardManager : MonoBehaviour {
 
+    //GlobalController, which contains the leaderboards we want to display.
     public GlobalController m_globalController;
 
     #region Text Objects
+    //text object for displaying the easy leaderboard
     public Text m_EasyText;
 
+    //text object for displaying the medium leaderboard
     public Text m_MediumText;
 
+    //text object for displaying the hard leaderboard
     public Text m_HardText;
 
+    //text object for displaying the combined leaderboard
     public Text m_CombinedText;
     #endregion
 
-    // Use this for initialization
+    /// <summary>
+    /// Used for initialization
+    /// </summary>
     void Start ()
     {
+        //Get the GlobalController instance that contains the leaderboards
         m_globalController = GlobalController.GetInstance();
 
         SetupLeaderboard();
     }
 
+    /// <summary>
+    /// Initializes all text objects to display their appropriate leaderboards.
+    /// </summary>
     public void SetupLeaderboard()
     {
         //Setup the text for each leaderboard based on which text objects to update, using a PlayerInfo leaderboard.
