@@ -7,7 +7,7 @@ using UnityEngine.UI;
 public class UIController : MonoBehaviour {
 
     #region Object Associations
-    //GameController object that keeps track of score, hints, hazard/safety modes, and time
+    //Controller object that keeps track of score, hints, hazard/safety modes, and time
     public Controller m_Controller;
     #endregion
 

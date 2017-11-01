@@ -42,6 +42,14 @@ public class TutorialController : Controller
     // The hint object to interact with
     public GameObject m_hint;
 
+    /// <summary>
+    /// an enumeration to tell us what part of the tutorial we're on
+    /// </summary>
+    private enum TutorialState { WrongIDDone, HazardIDDone, SafetyIDDone, HintIDDone }
+
+    //the current state for the tutorial
+    private TutorialState currentState;
+
     // checks to see if safety has been incorrectly identified
     private bool m_wrongIdDone;
 

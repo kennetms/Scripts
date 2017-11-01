@@ -279,7 +279,7 @@ public class VRKeyboard : MonoBehaviour {
             //on enter, we want the gamecontroller to set the player name
             case KeyCode.Return:
                 //Get the global controller instance so we can set the current player's name
-                GlobalController.GetInstance().SetPlayerName(m_displayText.text);
+                GlobalController.GetInstance().SetPlayerName(displayText.text);
 
                 //now that we've entered the name we want to switch to the review panel.
                 m_TransitionManager.TransitionToReviewPanel();

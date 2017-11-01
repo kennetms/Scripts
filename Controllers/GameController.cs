@@ -250,7 +250,7 @@ public class GameController : Controller
         //since the round is over, we no longer need the ingame UI, so we disable it
         m_InterfaceController.DisableUI();
 
-        m_globalController.SetPlayerScore(m_score);
+        m_globalController.SetPlayerScore(m_Score);
         m_TransitionManager.TransitionToKeyboard();
     }
 
