@@ -42,6 +42,8 @@ public class GlobalController : MonoBehaviour {
     //the max number of players in the leaderboard
     private int maxLeaderboardSize;
 
+    private PlayerInfo m_currentPlayer;
+
     /// <summary>
     /// the class that describes a player's information in the leaderboard
     /// consists of a name, score, and the difficulty in which they played
@@ -49,7 +51,7 @@ public class GlobalController : MonoBehaviour {
     public class PlayerInfo
     {
         //disable the default constructor
-        private PlayerInfo() { }
+        public PlayerInfo() { }
 
         //the score of the player
         public int score;
@@ -109,6 +111,11 @@ public class GlobalController : MonoBehaviour {
 
     void Start()
     {
+        //initialize the current player which we will later be adding to the leaderboard
+        m_currentPlayer = new PlayerInfo();
+
+        //maxLeaderboardSize is defaulted to 10 because that is the sizing for the leaderboard
+        //UI that is currently supported.
         maxLeaderboardSize = 10;
 
         //Check if our GlobalController has been created already
@@ -184,17 +191,36 @@ public class GlobalController : MonoBehaviour {
     }
 
     /// <summary>
+    /// Set the current player's score for the round
+    /// </summary>
+    /// <param name="score">the score of the player</param>
+    public void SetPlayerScore(int score)
+    {
+        m_currentPlayer.score = score;
+    }
+
+    /// <summary>
+    /// Set the current player's name
+    /// </summary>
+    /// <param name="name">the name of the player</param>
+    public void SetPlayerName(string name)
+    {
+        m_currentPlayer.name = name;
+        AddLeaderboardPlayer(m_currentPlayer);
+    }
+
+    /// <summary>
     /// Add a player to the leaderboard
     /// </summary>
     /// <param name="playerName">The player's name to add</param>
     /// <param name="score">the player's score to add</param>
-    public void AddLeaderboardPlayer(string playerName, int score)
+    private void AddLeaderboardPlayer(PlayerInfo player)
     {
-        //creating a player with the name and score parameters, using the difficulty of the last round played.
-        PlayerInfo player = new PlayerInfo(score, playerName, m_difficulty);
+        //set the difficulty of the player to determine the leaderboard to add them to.
+        player.difficulty = m_difficulty;
 
         //Picking which difficulty leaderboard the player should go in
-        switch (m_difficulty)
+        switch (player.difficulty)
         {
             case Difficulty.Easy:
                 AddPlayerToLeaderboard(player, easyLeaderboard);
@@ -206,6 +232,7 @@ public class GlobalController : MonoBehaviour {
                 AddPlayerToLeaderboard(player, hardLeaderboard);
                 break;
             default:
+                Debug.LogError("Couldn't add player to any of the difficulty leaderboards.");
                 break;
         }
 
