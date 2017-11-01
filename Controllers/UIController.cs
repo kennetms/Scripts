@@ -24,6 +24,9 @@ public class UIController : MonoBehaviour {
     //Text object for our current selection mode.
     public Text m_modeText;
 
+    //Text to display
+    public Text m_DisplayText;
+
     //Text that shows how much score was added or subtracted
     public Text m_plusOrMinus;
     #endregion
@@ -142,6 +145,14 @@ public class UIController : MonoBehaviour {
     void UpdateHintsText()
     {
         m_hintText.text = "Hints: " + m_Controller.Hints;
+    }
+
+    /// <summary>
+    /// Updates m_scoreText UI element to reflect new score.
+    /// </summary>
+    public void UpdateDisplayText(string task)
+    {
+        m_DisplayText.text = task;
     }
 
     /// <summary>

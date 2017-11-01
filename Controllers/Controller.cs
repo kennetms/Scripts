@@ -37,6 +37,10 @@ public class Controller : MonoBehaviour
     /// </summary>
     [SerializeField] protected float m_timeLeft = 300.0f;
 
+    //The Text to display
+    [SerializeField]
+    protected string m_DisplayText;
+
     //Accessor for score
     public int Score { get { return m_Score; } }
 
@@ -48,6 +52,9 @@ public class Controller : MonoBehaviour
 
     //Accessor for remaining time, in seconds
     public float TimeLeft { get { return m_timeLeft; } }
+
+    //Accessor for display texts
+    public string DisplayText { get { return m_DisplayText; } }
     #endregion
 
     /// <summary>
