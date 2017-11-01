@@ -29,11 +29,12 @@ using UnityEngine.EventSystems;
 using UnityEngine.Events;
 using UnityEngine.SceneManagement;
 
+/// <summary>
+/// Class that creates a keyboard for the user to enter a name for highscores
+/// </summary>
 public class VRKeyboard : MonoBehaviour {
 
-    ///Our game controller object
-    //public GameController m_GameController;
-
+    ///the transition manager that handles in scene transitions
     public TransitionManager m_TransitionManager;
 
     ///the m_KeyboardCanvas on which the keyboard is displayed
@@ -65,6 +66,9 @@ public class VRKeyboard : MonoBehaviour {
         m_KeyboardCanvas.SetActive(true);
     }
 
+    /// <summary>
+    /// Disables the displayed keyboard
+    /// </summary>
     public void DisableKeyboard()
     {
         m_KeyboardCanvas.SetActive(false);
@@ -74,7 +78,6 @@ public class VRKeyboard : MonoBehaviour {
     /// <summary>
     /// A class to contain all the information we need to know about a key on the keyboard
     /// </summary>
-
     class Key
     {
         //the name of the key
@@ -302,30 +305,6 @@ public class VRKeyboard : MonoBehaviour {
                     displayText.text += capsShift ? key.shiftedCharacter : key.character;
                 break;
         }
-        /**
-        if (key.code == KeyCode.Return)
-        {
-            /**submit event data
-             * var submittedEvent = new BaseEventData(EventSystem.current);
-             * ExecutedEvents.Execute(inputField, submitEvent, ExectueEvents.submitHandler);
-             **
-            //The user entered their name, so we want to enter in our GlobalController that information, then switch the scene.
-            m_GameController.SetPlayerName(displayText.text);
-        }
-        else if (key.code == KeyCode.Backspace && displayText.text.Length > 0)
-        {
-            // remove last char
-            displayText.text = displayText.text.Substring(0, displayText.text.Length - 1);
-        }
-        else if(key.code == KeyCode.RightShift)
-        {
-            SetCapsShift();
-        }
-        else if(displayText.text.Length < 3)
-        {
-            //if <3 characters, we can add another initial to their name.
-            displayText.text += capsShift ? key.shiftedCharacter : key.character;
-        }*/
     }
 
     /// <summary>

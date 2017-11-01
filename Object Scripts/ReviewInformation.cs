@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-///An extension of ObjectInformation that is exclusively used for hazards and safetys,
-///and is placed on those objects to show they are interactable & they have information
-//for the review panel.
+/// <summary>
+/// An extension of ObjectInformation that is exclusively used for hazards and safetys,
+/// and is placed on those objects to show they are interactable & they have information
+/// for the review panel.
+/// </summary>
 public class ReviewInformation : ObjectInformation {
 
     //the object's review information

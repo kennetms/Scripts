@@ -9,11 +9,11 @@ using UnityEngine.UI;
 /// </summary>
 public class TransitionManager : MonoBehaviour
 {
+    //the keyboard interface to display to the user
     public VRKeyboard m_Keyboard;
 
+    //the manager of the review panel, used to load the review panel
     public ReviewPanelManager m_ReviewPanel;
-
-    public GameController m_GameController;
 
     /// <summary>
     /// Transitions to the keyboard in scene
@@ -29,7 +29,10 @@ public class TransitionManager : MonoBehaviour
     /// </summary>
     public void TransitionToReviewPanel()
     {
+        //disable the keyboard on the transition to the review panel
         m_Keyboard.DisableKeyboard();
+
+        //load the review panel in scene
         m_ReviewPanel.LoadReviewPanel();
     }
 

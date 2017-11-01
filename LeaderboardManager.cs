@@ -4,12 +4,9 @@ using UnityEngine;
 using UnityEngine.UI;
 
 /// <summary>
-/// Class that manages 
+/// Class that manages the leaderboard display
 /// </summary>
 public class LeaderboardManager : MonoBehaviour {
-
-    //GlobalController, which contains the leaderboards we want to display.
-    public GlobalController m_globalController;
 
     #region Text Objects
     //text object for displaying the easy leaderboard
@@ -30,9 +27,6 @@ public class LeaderboardManager : MonoBehaviour {
     /// </summary>
     void Start ()
     {
-        //Get the GlobalController instance that contains the leaderboards
-        m_globalController = GlobalController.GetInstance();
-
         SetupLeaderboard();
     }
 

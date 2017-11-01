@@ -2,8 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-///a class placed on a GameObject that is meant to be interacted; a hazard/safety/innocuous object.
+/// <summary>
+/// a class that holds interactable object information, meant to be placed on all GameObjects
+/// that are meant to be interacted; a hazard/safety/innocuous object.
+/// </summary>
 public class ObjectInformation : MonoBehaviour {
+
     //flag to tell if we've already interacted with the object
     private bool m_interactedWith = false;
 
