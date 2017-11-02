@@ -9,29 +9,29 @@ using UnityEngine;
 public class TriggerSphere : MonoBehaviour
 {
     //GameObject tutorial controller
-    public GameObject m_TutorialContoller;
+    public TutorialController m_TutorialContoller;
 
     public void OnTriggerEnter()
     {
 
         gameObject.SetActive(false);
 
-        GameObject path1 = m_TutorialContoller.GetComponent<TutorialController>().Path1;
-        GameObject path2 = m_TutorialContoller.GetComponent<TutorialController>().Path2;
-        GameObject path3 = m_TutorialContoller.GetComponent<TutorialController>().Path3;
-        GameObject path4 = m_TutorialContoller.GetComponent<TutorialController>().Path4;
-        GameObject path5 = m_TutorialContoller.GetComponent<TutorialController>().Path5;
-        GameObject path6 = m_TutorialContoller.GetComponent<TutorialController>().Path6;
+        GameObject path1 = m_TutorialContoller.Path1;
+        GameObject path2 = m_TutorialContoller.Path2;
+        GameObject path3 = m_TutorialContoller.Path3;
+        GameObject path4 = m_TutorialContoller.Path4;
+        GameObject path5 = m_TutorialContoller.Path5;
+        GameObject path6 = m_TutorialContoller.Path6;
 
-        GameObject blockade1 = m_TutorialContoller.GetComponent<TutorialController>().m_blockade1;
-        GameObject blockade2 = m_TutorialContoller.GetComponent<TutorialController>().m_blockade2;
+        GameObject blockade1 = m_TutorialContoller.m_blockade1;
+        GameObject blockade2 = m_TutorialContoller.m_blockade2;
 
 
         if (gameObject.name == "TriggerSphere")
         {
             path2.SetActive(true);
             path1.SetActive(false);
-            m_TutorialContoller.GetComponent<TutorialController>().SetState(1); //FirstPath
+            m_TutorialContoller.AdvanceState(); //FirstPath
             blockade1.SetActive(false);
             gameObject.SetActive(false);
         }
@@ -40,32 +40,32 @@ public class TriggerSphere : MonoBehaviour
         {
             path3.SetActive(true);
             path2.SetActive(false);
-            m_TutorialContoller.GetComponent<TutorialController>().SetState(2); //SecondPath
+            m_TutorialContoller.AdvanceState(); //SecondPath
             blockade2.SetActive(true);
             gameObject.SetActive(false);
         }
 
         if (gameObject.name == "TriggerSphere3")
         {
-            m_TutorialContoller.GetComponent<TutorialController>().SetState(3); //ThirdPath
+            m_TutorialContoller.AdvanceState(); //ThirdPath
             path3.SetActive(false);
             gameObject.SetActive(false);
         }
         if (gameObject.name == "TriggerSphere4")
         {
-            m_TutorialContoller.GetComponent<TutorialController>().SetState(5); //ForthPath
+            m_TutorialContoller.AdvanceState(); //ForthPath
             path4.SetActive(false);
         }
 
         if (gameObject.name == "TriggerSphere5")
         {
-            m_TutorialContoller.GetComponent<TutorialController>().SetState(7); //FifthPath
+            m_TutorialContoller.AdvanceState(); //FifthPath
             path5.SetActive(false);
         }
 
         if (gameObject.name == "TriggerSphere6")
         {
-            m_TutorialContoller.GetComponent<TutorialController>().SetState(9); //SixthPath
+            m_TutorialContoller.AdvanceState(); //SixthPath
             path6.SetActive(false);
         }
     }

@@ -108,7 +108,7 @@ public class TutorialController : Controller
     override protected void Start ()
     {
         base.Start();
-
+        AdvanceState();
         m_hazardIdDone = false;
         m_safetyIdDone = false;
         m_hintIdDone = false;
@@ -143,10 +143,14 @@ public class TutorialController : Controller
     /// <summary>
     /// function used to switch states
     /// </summary>
-    public void SetState(int i)
+    public void AdvanceState()
     {
         switch (currentState)
         {
+            case TutorialState.Idle:
+                m_InterfaceController.UpdateDisplayText("Follow the glowing path.");
+                currentState = TutorialState.FirstPath;
+                break;
 
             case TutorialState.FirstPath:
                 m_InterfaceController.UpdateDisplayText("Follow next glowing path");
@@ -160,7 +164,7 @@ public class TutorialController : Controller
 
             case TutorialState.ThirdPath:
                 m_InterfaceController.UpdateDisplayText("Point reticle at rifle and click A to identify object as an Hazard object");
-                currentState = TutorialState.ThirdPath;
+                currentState = TutorialState.HazardIDDone;
                 break;
 
             case TutorialState.HazardIDDone:
@@ -217,8 +221,6 @@ public class TutorialController : Controller
                 else if (i == 8) { currentState = TutorialState.SafetyIDDone; }
                 else if (i == 9) { currentState = TutorialState.SixthPath; }
                 else if (i == 10) { currentState = TutorialState.HintIDDone; }*/
-        }
-
     }
     /// <summary>
     /// interact with obj; check validity of interaction and actually execute the interaction.
