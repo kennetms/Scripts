@@ -121,6 +121,30 @@ public class TutorialController : Controller
         //handles raycasting
         base.Update();
 
+        switch(currentState)
+        {
+            case TutorialState.FirstPath:
+                break;
+
+            case TutorialState.SecondPath:
+                break;
+
+
+            case TutorialState.ThirdPath:
+                break;
+
+            case TutorialState.FourthPath:
+                break;
+
+            case TutorialState.FifthPath:
+                break;
+
+            case TutorialState.SixthPath:
+                break;
+
+            case TutorialState.HazardIDDone:
+                break;
+        }
         //Tasks display by where they are at
         if (currentState == TutorialState.FirstPath)
         {
@@ -161,7 +185,7 @@ public class TutorialController : Controller
         //near corgi
         else if (currentState == TutorialState.SafetyIDDone)
         {
-            m_InterfaceController.UpdateDisplayText("Goodjob! Continue to follow the glowing path towards the dog");
+            m_InterfaceController.UpdateDisplayText("Good job! Continue to follow the glowing path towards the dog");
             Path6.SetActive(true);
         }
         else if (currentState == TutorialState.SixthPath)

@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// A base class for all controllers, handles any general controller function.
+/// </summary>
 public class Controller : MonoBehaviour
 {
 
