@@ -13,13 +13,13 @@ public class GlobalController : MonoBehaviour {
     const string HouseScene = "HouseScene";
 
     #region Leaderboards
-    //the array of players in the leaderboard
+    
+    //the leaderboards for each difficulty
     public static PlayerInfo[] easyLeaderboard;
-
     public static PlayerInfo[] mediumLeaderboard;
-
     public static PlayerInfo[] hardLeaderboard;
 
+    //the leaderboard for all difficulties
     public static PlayerInfo[] combinedLeaderboard;
     #endregion
 
@@ -240,7 +240,10 @@ public class GlobalController : MonoBehaviour {
         AddPlayerToLeaderboard(player, combinedLeaderboard);
     }
 
-    //sets the difficulty for our next round and changes to the scene the game is located in.
+    /// <summary>
+    /// Sets the difficulty for the next round & changes the game to the house scene.
+    /// </summary>
+    /// <param name="diff"></param>
     public void SetDifficulty(int diff)
     {
         m_difficulty = (GlobalController.Difficulty)diff;
