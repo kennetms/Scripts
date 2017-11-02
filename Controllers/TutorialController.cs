@@ -9,7 +9,12 @@ using UnityEngine;
 /// </summary>
 public class TutorialController : Controller
 {
+    //The Text to display
+    [SerializeField]
+    protected string m_DisplayText;
 
+    //Accessor for display texts
+    public string DisplayText { get { return m_DisplayText; } }
     //The UIController, used to update Player UI and Display the Keyboard.
     public UIController m_InterfaceController;
 
@@ -45,22 +50,59 @@ public class TutorialController : Controller
     /// <summary>
     /// an enumeration to tell us what part of the tutorial we're on
     /// </summary>
-    private enum TutorialState { WrongIDDone, HazardIDDone, SafetyIDDone, HintIDDone }
+    public enum TutorialState { Idle, FirstPath, SecondPath, ThirdPath, HazardIDDone, FourthPath, WrongIDDone, FifthPath, SafetyIDDone, SixthPath, HintIDDone }
+
+    /// <summary>
+    /// an enumeration to tell us what text to display.
+    /// </summary>
+    //private enum TextState { FirstPath, SecondPath, ThirdPath, FourthPath, FithPath, SixthPath}
 
     //the current state for the tutorial
-    private TutorialState currentState;
-
-    // checks to see if safety has been incorrectly identified
-    private bool m_wrongIdDone;
+    public TutorialState currentState = TutorialState.Idle;
 
     // checks to see if hazard has been correctly identified
     public bool m_hazardIdDone;
+
+    // checks to see if safety has been incorrectly identified
+    private bool m_wrongIdDone;
 
     // checks to see if safety has been correctly identified
     private bool m_safetyIdDone;
 
     // checks to see if corgi properly hinted
     private bool m_hintIdDone;
+
+
+    //[SerializeField]
+    public GameObject Path1;
+
+    // The second path to turn on after the first path is walked
+    //[SerializeField]
+    public GameObject Path2;
+
+    // The third path to turn on 
+    //[SerializeField]
+    public GameObject Path3;
+
+    // The forth path to turn on 
+    //[SerializeField]
+    public GameObject Path4;
+
+    //// The fifth path to turn on 
+    [SerializeField]
+    public GameObject Path5;
+
+    // The sixth path to turn on 
+    //[SerializeField]
+    public GameObject Path6;
+
+    //[SerializeField]
+    public GameObject m_blockade1;
+
+    //[SerializeField]
+    public GameObject m_blockade2;
+
+
 
     // Use this for initialization
     override protected void Start ()
@@ -75,7 +117,7 @@ public class TutorialController : Controller
 
         m_OutlineApplier = GetComponent<OutlineApplier>();
 
-        m_InterfaceController.UpdateDisplayText("Follow the Glow Path");
+        m_InterfaceController.UpdateDisplayText("Follow the glowing path");
     }
 	
 	// Update is called once per frame
@@ -84,47 +126,79 @@ public class TutorialController : Controller
         //handles raycasting
         base.Update();
 
-        //Tasks display by where they are at
-        if (m_firstWalkDone)
+        switch(currentState)
         {
-            m_InterfaceController.UpdateDisplayText("Follow Next Path");
-            m_firstWalkDone = false;
+            case TutorialState.FirstPath:
+                break;
+
+            case TutorialState.SecondPath:
+                break;
+
+
+            case TutorialState.ThirdPath:
+                break;
+
+            case TutorialState.FourthPath:
+                break;
+
+            case TutorialState.FifthPath:
+                break;
+
+            case TutorialState.SixthPath:
+                break;
+
+            case TutorialState.HazardIDDone:
+                break;
+        }
+        //Tasks display by where they are at
+        if (currentState == TutorialState.FirstPath)
+        {
+            m_InterfaceController.UpdateDisplayText("Follow next glowing path");
         }
         //upstairs
-        else if (m_walkedUpStairs)
+        else if (currentState == TutorialState.SecondPath)
         {
-            m_InterfaceController.UpdateDisplayText("Approach the rifle");
-            m_walkedUpStairs = false;
+            m_InterfaceController.UpdateDisplayText("Continue to follow the glowing path towards the rifle");
         }
         //near rifle
-        else if (m_appraochedRifle)
+        else if (currentState == TutorialState.ThirdPath)
         {
-            m_InterfaceController.UpdateDisplayText("Point reticle at rifle and click A to identify object as an hazard object");
-            m_appraochedRifle = false;
+            m_InterfaceController.UpdateDisplayText("Point reticle at rifle and click A to identify object as an Hazard object");
+        }
+        else if (currentState == TutorialState.HazardIDDone)
+        {
+            m_InterfaceController.UpdateDisplayText("Goodjob! Continue to follow the glowing path towards the helmet");
+            Path4.SetActive(true);
         }
         //near wrong helemet
-        else if (m_appraochedWrongHelmet)
+        else if (currentState == TutorialState.FourthPath)
         {
-            m_InterfaceController.UpdateDisplayText("Point reticle at helmet and click A to identify object as an hazard object");
-            m_appraochedWrongHelmet = false;
+            m_InterfaceController.UpdateDisplayText("Point reticle at helmet and click A to identify object as an Hazard object");
+        }
+        else if (currentState == TutorialState.WrongIDDone)
+        {
+            m_InterfaceController.UpdateDisplayText("Goodjob! Continue to follow the glowing path towards the other helmet");
+            Path5.SetActive(true);
         }
         //near helmet
-        else if (m_appraochedHelmet)
+        else if (currentState == TutorialState.FifthPath)
         {
-            m_InterfaceController.UpdateDisplayText("Point reticle at helmet and click A to identify object as a saftey object");
-            m_appraochedHelmet = false;
+            m_InterfaceController.UpdateDisplayText("Hit RT to change mode to Saftey and point reticle at helmet and click A to identify object as a Saftey object");
         }
         //near corgi
-        else if (m_appraochedCorgi)
+        else if (currentState == TutorialState.SafetyIDDone)
         {
-            m_InterfaceController.UpdateDisplayText("Point reticle at corgi and click B to use your hints on the object");
-            m_appraochedCorgi = false;
+            m_InterfaceController.UpdateDisplayText("Good job! Continue to follow the glowing path towards the dog");
+            Path6.SetActive(true);
+        }
+        else if (currentState == TutorialState.SixthPath)
+        {
+            m_InterfaceController.UpdateDisplayText("Point reticle at dog and click B to hint the object");
         }
         //finished tutorial
-        else if (m_hintIdDone)
+        else if (currentState == TutorialState.HintIDDone)
         {
             m_InterfaceController.UpdateDisplayText("You have completed the tutorial!");
-            m_appraochedCorgi = false;
         }
 
 
@@ -145,6 +219,28 @@ public class TutorialController : Controller
         bLayout.SetActive(false);
     }
 
+    /// <summary>
+    /// function used to switch states
+    /// </summary>
+    public void SetState(int i)
+    {
+        switch (currentState)
+        {
+            case TutorialState.FirstPath:
+                currentState = TutorialState.SecondPath;
+                break;
+        }
+        if (i == 1) { currentState = TutorialState.FirstPath; }
+        else if (i == 2) { currentState = TutorialState.SecondPath; }
+        else if (i == 3) { currentState = TutorialState.ThirdPath; }
+        else if (i == 4) { currentState = TutorialState.HazardIDDone; }
+        else if (i == 5) { currentState = TutorialState.FourthPath; }
+        else if (i == 6) { currentState = TutorialState.WrongIDDone; }
+        else if (i == 7) { currentState = TutorialState.FifthPath; }
+        else if (i == 8) { currentState = TutorialState.SafetyIDDone; }
+        else if (i == 9) { currentState = TutorialState.SixthPath; }
+        else if (i == 10) { currentState = TutorialState.HintIDDone; }
+    }
     /// <summary>
     /// interact with obj; check validity of interaction and actually execute the interaction.
     /// </summary>
@@ -198,18 +294,28 @@ public class TutorialController : Controller
                 SubtractScore(objInfo.BaseScore);
 
                 m_safety.SetActive(true);
+                currentState = TutorialState.WrongIDDone;
                 m_wrongIdDone = true;
             }
         }
 
-        if(obj.CompareTag("hazard"))
+        if (obj.CompareTag("hazard"))
         {
             m_wrong.SetActive(true);
+            currentState = TutorialState.HazardIDDone;
             m_hazardIdDone = true;
         }
-        else if(obj.CompareTag("safety"))
+        else if (obj.name == "SafetyObject Wrong")
+        {
+            currentState = TutorialState.WrongIDDone;
+        }
+        else if (obj.name == "SimpleCorgi") {
+            currentState = TutorialState.HintIDDone;
+        }
+        else if (obj.CompareTag("safety"))
         {
             m_hint.SetActive(true);
+            currentState = TutorialState.SafetyIDDone;
             m_safetyIdDone = true;
         }
         else

@@ -94,6 +94,9 @@ public class GlobalController : MonoBehaviour {
 
         //set our singleton instance
         m_Instance = this;
+
+        //initialize the current player which we will later be adding to the leaderboard
+        m_currentPlayer = new PlayerInfo();
     }
 
     /// <summary>

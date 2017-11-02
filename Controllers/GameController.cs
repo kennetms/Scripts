@@ -250,6 +250,7 @@ public class GameController : Controller
         //since the round is over, we no longer need the ingame UI, so we disable it
         m_InterfaceController.DisableUI();
 
+        //setting the current player score for entry into the leaderboards later
         m_globalController.SetPlayerScore(m_Score);
         m_TransitionManager.TransitionToKeyboard();
     }
@@ -325,7 +326,6 @@ public class GameController : Controller
     /// <param name="randomSpawn">The probability an object will be disabled</param>
     void RandomDisable(GameObject[] objects, float randomSpawn)
     {
-        List<int> positionsToDestroy = new List<int>();
         int currCount = 0;
 
         //starting point for object array selection, disabling or leaving enabled
@@ -344,18 +344,10 @@ public class GameController : Controller
             //disabling object randomly
             if (Random.value > randomSpawn)
             {
-                if(objects[i].tag == "innoc")
-                    positionsToDestroy.Add(i);
                 objects[i].SetActive(false);
                 ++currCount;
             }
         } while (currCount < maxDisabledItems * randomSpawn && ++i != startPoint - 1);
-
-        if(objects[0].tag == "innoc")
-        {
-            foreach (int pos in positionsToDestroy)
-                Destroy(objects[pos]);
-        }
     }
 
     /// <summary>
@@ -384,14 +376,14 @@ public class GameController : Controller
         //update interaction flag.
         objInfo.Interact();
         
-        //string for comparing tags
+        //string for comparing tags, based on our current mode
         string currentMode = (m_HazardMode) ? "hazard" : "safety";
 
         //does our mode correspond to this object's tag?
         bool correctTag = obj.CompareTag(currentMode);
-        
+
         //did we select the correct object type for the object?
-        if(correctTag)
+        if (correctTag)
         {
             //Apply a green (correct) outline to the object model and add score
             m_OutlineApplier.ApplyGreenOutline(obj);
@@ -401,19 +393,24 @@ public class GameController : Controller
         {
             //Apply a red (incorrect) outline to the object
             m_OutlineApplier.ApplyRedOutline(obj);
-            
-            //as long as we're not on easy, points should be lost for incorrect selection.
-            if(difficulty != GlobalController.Difficulty.Easy)
-                if (difficulty == GlobalController.Difficulty.Medium)
-                {
-                    //if difficulty on medium, only subtract points if wrong hazard/safety mode is on
-                    //i.e. using safety mode on aggressive dog
-                }
-                else
-                {
-                    //if difficulty on hard, points should be lost no matter what.
+
+            //based on the difficulty, points could be subtracted for an incorrect object selection.
+            switch (difficulty)
+            {
+                case GlobalController.Difficulty.Medium:
+                    //on medium, points are only lost if the object tag is the opposite of the selection mode
+                    if ((obj.tag == "hazard" && currentMode == "safety") ||
+                        (obj.tag == "safety" && currentMode == "hazard"))
+                    {
+                        SubtractScore(objInfo.BaseScore);
+                    }
+                    break;
+
+                //if difficulty on hard, points should be lost no matter what.
+                case GlobalController.Difficulty.Hard:
                     SubtractScore(objInfo.BaseScore);
-                }
+                    break;
+            }
         }
         
         //Regardless of if it was correct or not, the object should be added to the review panel.
@@ -427,7 +424,7 @@ public class GameController : Controller
     public override void Hinteract(GameObject obj)
     {
         //getting the ObjectInformation. ObjectInformation should only be placed on objects that
-        //are intended to be interacted with. objInfo will contain a flag for if this object
+        //are intended to be interacted with. objInfo will contain a flag indicating if this object
         //was already interacted with.
         ObjectInformation objInfo = obj.GetComponent<ObjectInformation>();
 
