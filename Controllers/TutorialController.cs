@@ -20,24 +20,6 @@ public class TutorialController : Controller
 
     public GameObject bLayout;
 
-    //checks to see if the first step of the tutorial is done, walking in the line to the first glow collider
-    public bool m_firstWalkDone;
-
-    // checks to see if player has walked up the stairs
-    public bool m_walkedUpStairs;
-
-    // checks to see if player has approached rifle
-    public bool m_appraochedRifle;
-
-    // checks to see if player has approached rifle
-    public bool m_appraochedWrongHelmet;
-
-    // checks to see if player has approached rifle
-    public bool m_appraochedHelmet;
-
-    // checks to see if player has approached rifle
-    public bool m_appraochedCorgi;
-
     // The safety object to interact with
     public GameObject m_safety;
 
@@ -72,7 +54,6 @@ public class TutorialController : Controller
     // checks to see if corgi properly hinted
     private bool m_hintIdDone;
 
-
     //[SerializeField]
     public GameObject Path1;
 
@@ -102,8 +83,6 @@ public class TutorialController : Controller
     //[SerializeField]
     public GameObject m_blockade2;
 
-
-
     // Use this for initialization
     override protected void Start ()
     {
@@ -114,8 +93,6 @@ public class TutorialController : Controller
         m_hintIdDone = false;
 
         m_OutlineApplier = GetComponent<OutlineApplier>();
-
-        m_InterfaceController.UpdateDisplayText("Follow the glowing path");
     }
 	
 	// Update is called once per frame
@@ -141,19 +118,20 @@ public class TutorialController : Controller
     }
 
     /// <summary>
-    /// function used to switch states
+    /// Advance our current state based on the sequence in which the
+    /// tutorial takes place.
     /// </summary>
     public void AdvanceState()
     {
         switch (currentState)
         {
             case TutorialState.Idle:
-                m_InterfaceController.UpdateDisplayText("Follow the glowing path.");
+                m_InterfaceController.UpdateDisplayText("Follow the glowing path");
                 currentState = TutorialState.FirstPath;
                 break;
 
             case TutorialState.FirstPath:
-                m_InterfaceController.UpdateDisplayText("Follow next glowing path");
+                m_InterfaceController.UpdateDisplayText("Follow the next glowing path");
                 currentState = TutorialState.SecondPath;
                 break;
 
@@ -283,25 +261,21 @@ public class TutorialController : Controller
         if (obj.CompareTag("hazard"))
         {
             m_wrong.SetActive(true);
-            currentState = TutorialState.HazardIDDone;
             m_hazardIdDone = true;
+            AdvanceState();
         }
         else if (obj.name == "SafetyObject Wrong")
         {
-            currentState = TutorialState.WrongIDDone;
+            AdvanceState();
         }
         else if (obj.name == "SimpleCorgi") {
-            currentState = TutorialState.HintIDDone;
+            AdvanceState();
         }
         else if (obj.CompareTag("safety"))
         {
             m_hint.SetActive(true);
-            currentState = TutorialState.SafetyIDDone;
             m_safetyIdDone = true;
-        }
-        else
-        {
-            return;
+            AdvanceState();
         }
     }
 
