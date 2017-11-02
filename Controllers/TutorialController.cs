@@ -9,7 +9,12 @@ using UnityEngine;
 /// </summary>
 public class TutorialController : Controller
 {
+    //The Text to display
+    [SerializeField]
+    protected string m_DisplayText;
 
+    //Accessor for display texts
+    public string DisplayText { get { return m_DisplayText; } }
     //The UIController, used to update Player UI and Display the Keyboard.
     public UIController m_InterfaceController;
 
@@ -149,13 +154,11 @@ public class TutorialController : Controller
         if (currentState == TutorialState.FirstPath)
         {
             m_InterfaceController.UpdateDisplayText("Follow next glowing path");
-            m_firstWalkDone = false;
         }
         //upstairs
         else if (currentState == TutorialState.SecondPath)
         {
             m_InterfaceController.UpdateDisplayText("Continue to follow the glowing path towards the rifle");
-            m_walkedUpStairs = false;
         }
         //near rifle
         else if (currentState == TutorialState.ThirdPath)
@@ -221,6 +224,12 @@ public class TutorialController : Controller
     /// </summary>
     public void SetState(int i)
     {
+        switch (currentState)
+        {
+            case TutorialState.FirstPath:
+                currentState = TutorialState.SecondPath;
+                break;
+        }
         if (i == 1) { currentState = TutorialState.FirstPath; }
         else if (i == 2) { currentState = TutorialState.SecondPath; }
         else if (i == 3) { currentState = TutorialState.ThirdPath; }
