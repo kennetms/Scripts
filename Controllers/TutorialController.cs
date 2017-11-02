@@ -109,8 +109,6 @@ public class TutorialController : Controller
     {
         base.Start();
 
-        m_firstWalkDone = false;
-        m_walkedUpStairs = false;
         m_hazardIdDone = false;
         m_safetyIdDone = false;
         m_hintIdDone = false;
@@ -126,82 +124,6 @@ public class TutorialController : Controller
         //handles raycasting
         base.Update();
 
-        switch(currentState)
-        {
-            case TutorialState.FirstPath:
-                break;
-
-            case TutorialState.SecondPath:
-                break;
-
-
-            case TutorialState.ThirdPath:
-                break;
-
-            case TutorialState.FourthPath:
-                break;
-
-            case TutorialState.FifthPath:
-                break;
-
-            case TutorialState.SixthPath:
-                break;
-
-            case TutorialState.HazardIDDone:
-                break;
-        }
-        //Tasks display by where they are at
-        if (currentState == TutorialState.FirstPath)
-        {
-            m_InterfaceController.UpdateDisplayText("Follow next glowing path");
-        }
-        //upstairs
-        else if (currentState == TutorialState.SecondPath)
-        {
-            m_InterfaceController.UpdateDisplayText("Continue to follow the glowing path towards the rifle");
-        }
-        //near rifle
-        else if (currentState == TutorialState.ThirdPath)
-        {
-            m_InterfaceController.UpdateDisplayText("Point reticle at rifle and click A to identify object as an Hazard object");
-        }
-        else if (currentState == TutorialState.HazardIDDone)
-        {
-            m_InterfaceController.UpdateDisplayText("Goodjob! Continue to follow the glowing path towards the helmet");
-            Path4.SetActive(true);
-        }
-        //near wrong helemet
-        else if (currentState == TutorialState.FourthPath)
-        {
-            m_InterfaceController.UpdateDisplayText("Point reticle at helmet and click A to identify object as an Hazard object");
-        }
-        else if (currentState == TutorialState.WrongIDDone)
-        {
-            m_InterfaceController.UpdateDisplayText("Goodjob! Continue to follow the glowing path towards the other helmet");
-            Path5.SetActive(true);
-        }
-        //near helmet
-        else if (currentState == TutorialState.FifthPath)
-        {
-            m_InterfaceController.UpdateDisplayText("Hit RT to change mode to Saftey and point reticle at helmet and click A to identify object as a Saftey object");
-        }
-        //near corgi
-        else if (currentState == TutorialState.SafetyIDDone)
-        {
-            m_InterfaceController.UpdateDisplayText("Good job! Continue to follow the glowing path towards the dog");
-            Path6.SetActive(true);
-        }
-        else if (currentState == TutorialState.SixthPath)
-        {
-            m_InterfaceController.UpdateDisplayText("Point reticle at dog and click B to hint the object");
-        }
-        //finished tutorial
-        else if (currentState == TutorialState.HintIDDone)
-        {
-            m_InterfaceController.UpdateDisplayText("You have completed the tutorial!");
-        }
-
-
         // only allow mode to be changed after the hazard is identified
         if (m_wrongIdDone)
         {
@@ -211,7 +133,6 @@ public class TutorialController : Controller
                 m_HazardMode = OVRInput.GetDown(OVRInput.Button.SecondaryIndexTrigger) ? !m_HazardMode : m_HazardMode;
             }
         }
-
 
         //update all of our UI elements
         m_InterfaceController.UpdateUI();
@@ -226,20 +147,78 @@ public class TutorialController : Controller
     {
         switch (currentState)
         {
+
             case TutorialState.FirstPath:
+                m_InterfaceController.UpdateDisplayText("Follow next glowing path");
                 currentState = TutorialState.SecondPath;
                 break;
+
+            case TutorialState.SecondPath:
+                m_InterfaceController.UpdateDisplayText("Continue to follow the glowing path towards the rifle");
+                currentState = TutorialState.ThirdPath;
+                break;
+
+            case TutorialState.ThirdPath:
+                m_InterfaceController.UpdateDisplayText("Point reticle at rifle and click A to identify object as an Hazard object");
+                currentState = TutorialState.ThirdPath;
+                break;
+
+            case TutorialState.HazardIDDone:
+                m_InterfaceController.UpdateDisplayText("Good job! Continue to follow the glowing path towards the helmet");
+                Path4.SetActive(true);
+                currentState = TutorialState.FourthPath;
+                break;
+
+            case TutorialState.FourthPath:
+                m_InterfaceController.UpdateDisplayText("Point reticle at helmet and click A to identify object as an Hazard object");
+                currentState = TutorialState.WrongIDDone;
+                break;
+
+            case TutorialState.WrongIDDone:
+                m_InterfaceController.UpdateDisplayText("Goodjob! Continue to follow the glowing path towards the other helmet");
+                Path5.SetActive(true);
+                currentState = TutorialState.FifthPath;
+                break;
+
+            case TutorialState.FifthPath:
+                m_InterfaceController.UpdateDisplayText("Hit RT to change mode to Saftey and point reticle at helmet and click A to identify object as a Saftey object");
+                currentState = TutorialState.SafetyIDDone;
+                break;
+
+            case TutorialState.SafetyIDDone:
+                m_InterfaceController.UpdateDisplayText("Good job! Continue to follow the glowing path towards the dog");
+                Path6.SetActive(true);
+                currentState = TutorialState.SixthPath;
+                break;
+
+            case TutorialState.SixthPath:
+                m_InterfaceController.UpdateDisplayText("Point reticle at dog and click B to hint the object");
+                currentState = TutorialState.HintIDDone;
+                break;
+
+            case TutorialState.HintIDDone:
+                m_InterfaceController.UpdateDisplayText("You have completed the tutorial!");
+                currentState = TutorialState.Idle;
+                break;
+
+            default:
+                Debug.LogError("Could not set tutorial state properly.");
+                break;
         }
-        if (i == 1) { currentState = TutorialState.FirstPath; }
-        else if (i == 2) { currentState = TutorialState.SecondPath; }
-        else if (i == 3) { currentState = TutorialState.ThirdPath; }
-        else if (i == 4) { currentState = TutorialState.HazardIDDone; }
-        else if (i == 5) { currentState = TutorialState.FourthPath; }
-        else if (i == 6) { currentState = TutorialState.WrongIDDone; }
-        else if (i == 7) { currentState = TutorialState.FifthPath; }
-        else if (i == 8) { currentState = TutorialState.SafetyIDDone; }
-        else if (i == 9) { currentState = TutorialState.SixthPath; }
-        else if (i == 10) { currentState = TutorialState.HintIDDone; }
+
+                /**I'm leaving this here because lmao this is funny
+                if (i == 1) { currentState = TutorialState.FirstPath; }
+                else if (i == 2) { currentState = TutorialState.SecondPath; }
+                else if (i == 3) { currentState = TutorialState.ThirdPath; }
+                else if (i == 4) { currentState = TutorialState.HazardIDDone; }
+                else if (i == 5) { currentState = TutorialState.FourthPath; }
+                else if (i == 6) { currentState = TutorialState.WrongIDDone; }
+                else if (i == 7) { currentState = TutorialState.FifthPath; }
+                else if (i == 8) { currentState = TutorialState.SafetyIDDone; }
+                else if (i == 9) { currentState = TutorialState.SixthPath; }
+                else if (i == 10) { currentState = TutorialState.HintIDDone; }*/
+        }
+
     }
     /// <summary>
     /// interact with obj; check validity of interaction and actually execute the interaction.
