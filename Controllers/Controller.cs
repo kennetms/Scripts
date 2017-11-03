@@ -78,22 +78,21 @@ public class Controller : MonoBehaviour
         // If an object is not null, enable particle trail
         m_reticle.SetColor(obj);
 
-        //If the a button was pressed
-        if (OVRInput.GetDown(OVRInput.Button.One))
+        //if we are raycasting onto an interactable object object
+        if (obj != null)
         {
-            //if we are raycasting onto an object, interact with it
-            if (obj != null)
+            //If the a button was pressed
+            if (OVRInput.GetDown(OVRInput.Button.One))
+            {
+                //a button -> interaction
                 Interact(obj);
-        }
-
-        //If the b button was pressed
-        if (OVRInput.GetDown(OVRInput.Button.Two))
-        {
-            //if we're raycasting onto an object, hint it
-            if (obj != null)
+            }
+            else if(OVRInput.GetDown(OVRInput.Button.Two))//If the b button was pressed
+            {
+                //b button -> Hint
                 Hinteract(obj);
+            }
         }
-
     }
 
     /// <summary>
@@ -108,8 +107,10 @@ public class Controller : MonoBehaviour
         //creating a ray object of our reticle
         Ray ray = Camera.main.ScreenPointToRay(reticleScreen);
 
+        //initialize variables needed to raycast
         RaycastHit hit;
 
+        //the layer of gazable objects, layer 10.
         var layerMask = 1 << 10;
 
         //return the GameObject we hit if there is one, otherwise return null
