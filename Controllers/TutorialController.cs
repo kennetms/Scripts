@@ -131,7 +131,7 @@ public class TutorialController : Controller
                 Path2.SetActive(true);
 
                 //remove the blockade for the player to advance
-                blockade1.SetActive(false);
+                m_blockade1.SetActive(false);
                 m_InterfaceController.UpdateDisplayText("Follow the next glowing path");
                 currentState = TutorialState.SecondPath;
                 break;
@@ -139,13 +139,13 @@ public class TutorialController : Controller
             case TutorialState.SecondPath:
                 Path2.SetActive(false);
                 Path3.SetActive(true);
-                blockade2.SetActive(true);
+                m_blockade2.SetActive(true);
                 m_InterfaceController.UpdateDisplayText("Continue to follow the glowing path towards the rifle");
                 currentState = TutorialState.ThirdPath;
                 break;
 
             case TutorialState.ThirdPath:
-                path3.SetActive(false);
+                Path3.SetActive(false);
                 m_InterfaceController.UpdateDisplayText("Point reticle at rifle and click A to identify object as an Hazard object");
                 currentState = TutorialState.HazardIDDone;
                 break;
@@ -165,6 +165,8 @@ public class TutorialController : Controller
                 break;
 
             case TutorialState.WrongIDDone:
+                m_safety.SetActive(true);
+                m_wrongIdDone = true;
                 m_InterfaceController.UpdateDisplayText("Good job! Continue to follow the glowing path towards the other helmet");
                 Path5.SetActive(true);
                 currentState = TutorialState.FifthPath;
@@ -185,7 +187,7 @@ public class TutorialController : Controller
                 break;
 
             case TutorialState.SixthPath:
-                path6.SetActive(false);
+                Path6.SetActive(false);
                 m_InterfaceController.UpdateDisplayText("Point reticle at dog and click B to hint the object");
                 currentState = TutorialState.HintIDDone;
                 break;
@@ -266,28 +268,11 @@ public class TutorialController : Controller
                 SubtractScore(objInfo.BaseScore);
 
                 //move these state changes to AdvanceState()
-                m_safety.SetActive(true);
                 AdvanceState();
-                m_wrongIdDone = true;
             }
         }
 
-        //i don't believe we need these anymore since anytime we interact with something & make it this far it's intended.
-        if (obj.CompareTag("hazard"))
-        {
-            AdvanceState();
-        }
-        else if (obj.name == "SafetyObject Wrong")
-        {
-            AdvanceState();
-        }
-        else if (obj.name == "SimpleCorgi") {
-            AdvanceState();
-        }
-        else if (obj.CompareTag("safety"))
-        {
-            AdvanceState();
-        }
+        AdvanceState();
     }
 
     /// <summary>
