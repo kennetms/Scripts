@@ -10,8 +10,7 @@ using UnityEngine;
 public class TutorialController : Controller
 {
     //The Text to display
-    [SerializeField]
-    protected string m_DisplayText;
+    [SerializeField] protected string m_DisplayText;
 
     //Accessor for display texts
     public string DisplayText { get { return m_DisplayText; } }
@@ -33,11 +32,6 @@ public class TutorialController : Controller
     /// an enumeration to tell us what part of the tutorial we're on
     /// </summary>
     public enum TutorialState { Idle, FirstPath, SecondPath, ThirdPath, HazardIDDone, FourthPath, WrongIDDone, FifthPath, SafetyIDDone, SixthPath, HintIDDone }
-
-    /// <summary>
-    /// an enumeration to tell us what text to display.
-    /// </summary>
-    //private enum TextState { FirstPath, SecondPath, ThirdPath, FourthPath, FithPath, SixthPath}
 
     //the current state for the tutorial
     public TutorialState currentState = TutorialState.Idle;
@@ -86,8 +80,12 @@ public class TutorialController : Controller
     // Use this for initialization
     override protected void Start ()
     {
+        //initalize the parts of the controller of the base controller class
         base.Start();
+
+        //advance the state to display our first state information
         AdvanceState();
+
         m_hazardIdDone = false;
         m_safetyIdDone = false;
         m_hintIdDone = false;
@@ -123,6 +121,7 @@ public class TutorialController : Controller
     /// </summary>
     public void AdvanceState()
     {
+        //our current state will determine the next state we move to and the information we need to update.
         switch (currentState)
         {
             case TutorialState.Idle:
@@ -157,13 +156,13 @@ public class TutorialController : Controller
                 break;
 
             case TutorialState.WrongIDDone:
-                m_InterfaceController.UpdateDisplayText("Goodjob! Continue to follow the glowing path towards the other helmet");
+                m_InterfaceController.UpdateDisplayText("Good job! Continue to follow the glowing path towards the other helmet");
                 Path5.SetActive(true);
                 currentState = TutorialState.FifthPath;
                 break;
 
             case TutorialState.FifthPath:
-                m_InterfaceController.UpdateDisplayText("Hit RT to change mode to Saftey and point reticle at helmet and click A to identify object as a Saftey object");
+                m_InterfaceController.UpdateDisplayText("Press the Right Trigger Button to change selection mode to Saftey. Then point the reticle at the helmet and press A to identify object as a Saftey object");
                 currentState = TutorialState.SafetyIDDone;
                 break;
 
@@ -252,12 +251,14 @@ public class TutorialController : Controller
                 m_OutlineApplier.ApplyRedOutline(obj);
                 SubtractScore(objInfo.BaseScore);
 
+                //move these state changes to AdvanceState()
                 m_safety.SetActive(true);
-                currentState = TutorialState.WrongIDDone;
+                AdvanceState();
                 m_wrongIdDone = true;
             }
         }
 
+        //anything updating our state here needs to be moved to AdvanceState()
         if (obj.CompareTag("hazard"))
         {
             m_wrong.SetActive(true);
@@ -289,6 +290,5 @@ public class TutorialController : Controller
             return;
         else
             base.Hinteract(obj);
-
     }
 }
