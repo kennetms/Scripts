@@ -72,12 +72,15 @@ public class Controller : MonoBehaviour
     /// </summary>
     protected virtual void Update()
     {
+        //find if we're raycasting onto an object
+        GameObject obj = Raycast();
+
+        // If an object is not null, enable particle trail
+        m_reticle.SetColor(obj);
+
         //If the a button was pressed
         if (OVRInput.GetDown(OVRInput.Button.One))
         {
-            //find if we're raycasting onto an object
-            GameObject obj = Raycast();
-
             //if we are raycasting onto an object, interact with it
             if (obj != null)
                 Interact(obj);
@@ -86,9 +89,6 @@ public class Controller : MonoBehaviour
         //If the b button was pressed
         if (OVRInput.GetDown(OVRInput.Button.Two))
         {
-            //find if we're raycasting onto an object
-            GameObject obj = Raycast();
-
             //if we're raycasting onto an object, hint it
             if (obj != null)
                 Hinteract(obj);
@@ -109,8 +109,13 @@ public class Controller : MonoBehaviour
         Ray ray = Camera.main.ScreenPointToRay(reticleScreen);
 
         RaycastHit hit;
+
+        var layerMask = 1 << 10;
+
         //return the GameObject we hit if there is one, otherwise return null
-        return (Physics.Raycast(ray,out hit, m_MaxDistance) ? hit.transform.gameObject : null);
+        //Also to note, the Raycast function call parameter 10 is the layer for gazable objects;
+        //we only want to raycast onto gazable objects
+        return (Physics.Raycast(ray,out hit, m_MaxDistance, layerMask) ? hit.transform.gameObject : null);
     }
 
     /// <summary>

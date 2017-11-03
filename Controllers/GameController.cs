@@ -74,6 +74,9 @@ public class GameController : Controller
 
     //Debugging flag to disable random player spawning
     public bool RandomizePlayerSpawn = false;
+
+    //Debugging flag that will run through all hazards/safeties/innocs to make sure they have the proper information.
+    public bool CheckAllObjectProperties = false;
     #endregion
 
     #region Object arrays
@@ -113,12 +116,100 @@ public class GameController : Controller
             m_SpawnPoints = new List<Vector3>();
             SpawnPlayer();
         }
+        //we need to get all of the objects of respective types to set their enabled statuses
+        if (hazards == null)
+            hazards = GameObject.FindGameObjectsWithTag("hazard");
+
+        if (safeties == null)
+            safeties = GameObject.FindGameObjectsWithTag("safety");
+
+        if (innocs == null)
+            innocs = GameObject.FindGameObjectsWithTag("innoc");
+
+        if (furniture == null)
+            furniture = GameObject.FindGameObjectsWithTag("furniture");
+
+        if (parents == null)
+            parents = GameObject.FindGameObjectsWithTag("parent");
 
         //Randomize object spawns if the debugging flag is true
         if (RandomizeObjectSpawn)
-            RandomizeObjectEnabling();  
+            RandomizeObjectEnabling(); 
+
+        if(CheckAllObjectProperties)
+            CheckObjectProperties();
     }
 
+    void CheckObjectProperties()
+    {
+        foreach(GameObject hazard in hazards)
+        {
+            if (!hazard.GetComponent<Collider>())
+                Debug.LogError("hazard " + hazard.name + " has no collider.");
+
+            ReviewInformation objInfo = hazard.GetComponent<ReviewInformation>();
+
+            if (!objInfo)
+                Debug.LogError("hazard " + hazard.name + " has no review information script.");
+            else
+            {
+                if (objInfo.BaseScore == 0)
+                    Debug.LogError("hazard " + hazard.name + " has no base score set.");
+
+                if(objInfo.ReviewInfo == "")
+                    Debug.LogError("hazard " + hazard.name + " has no review information text.");
+
+                if(objInfo.HintInfo == "")
+                    Debug.LogError("hazard " + hazard.name + " has no hint information text.");
+            }
+
+            //not on the gazable layer, which we need on gazable layer for raycasting
+            if (hazard.layer != 10)
+                Debug.LogError("hazard " + hazard.name + "'s layer is not set to gazable.");
+
+        }
+
+        foreach (GameObject safety in safeties)
+        {
+            if (!safety.GetComponent<Collider>())
+                Debug.LogError("safety " + safety.name + " has no collider.");
+
+            ReviewInformation objInfo = safety.GetComponent<ReviewInformation>();
+
+            if (!objInfo)
+                Debug.LogError("safety " + safety.name + " has no review information script.");
+            else
+            {
+                if (objInfo.BaseScore == 0)
+                    Debug.LogError("safety " + safety.name + " has no base score set.");
+
+                if (objInfo.ReviewInfo == "")
+                    Debug.LogError("safety " + safety.name + " has no review information text.");
+
+                if (objInfo.HintInfo == "")
+                    Debug.LogError("safety " + safety.name + " has no hint information text.");
+            }
+
+            //not on the gazable layer, which we need on gazable layer for raycasting
+            if (safety.layer != 10)
+                Debug.LogError("safety " + safety.name + "'s layer is not set to gazable.");
+        }
+
+        foreach (GameObject innoc in innocs)
+        {
+            if (!innoc.GetComponent<Collider>())
+                Debug.LogError("innoc " + innoc.name + " has no collider.");
+
+            if (!innoc.GetComponent<ObjectInformation>())
+                Debug.LogError("innoc " + innoc.name + " has no object information.");
+            else if (innoc.GetComponent<ObjectInformation>().BaseScore == 0)
+                Debug.LogError("innoc " + innoc.name + " has no base score set.");
+
+            //not on the gazable layer, which we need on gazable layer for raycasting
+            if (innoc.layer != 10)
+                Debug.LogError("innoc " + innoc.name + "'s layer is not set to gazable.");
+        }
+    }
     /// <summary>
     /// Initializes the GameController's difficulty settings for the current round
     /// </summary>
@@ -262,22 +353,6 @@ public class GameController : Controller
     /// </summary>
     void RandomizeObjectEnabling()
     {
-        //we need to get all of the objects of respective types to set their enabled statuses
-        if (hazards == null)
-            hazards = GameObject.FindGameObjectsWithTag("hazard");
-
-        if (safeties == null)
-            safeties = GameObject.FindGameObjectsWithTag("safety");
-
-        if (innocs == null)
-            innocs = GameObject.FindGameObjectsWithTag("innoc");
-
-        if (furniture == null)
-            furniture = GameObject.FindGameObjectsWithTag("furniture");
-
-        if (parents == null)
-            parents = GameObject.FindGameObjectsWithTag("parent");
-
         //randomly disable hazards, safeties, and innocs
         RandomDisable(hazards, gameSpawn[0]);
         RandomDisable(safeties, gameSpawn[0]);
@@ -305,7 +380,13 @@ public class GameController : Controller
     /// <param name="parent"> The parent for which we are selecting children</param>
     private void ParentSelectChild(GameObject parent)
     {
+        
         int numChildren = parent.transform.childCount;
+
+        if(numChildren == 0)
+        {
+            Debug.LogError("Parent " + parent.name + " has no children");
+        }
         //disable all children of a parent object
         for (int i = 0; i < numChildren; ++i)
             parent.transform.GetChild(i).gameObject.SetActive(false);
