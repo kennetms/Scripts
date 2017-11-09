@@ -89,9 +89,6 @@ public class GameController : Controller
     //list of innocuous objects
     private GameObject[] innocs;
 
-    //list of innocuous furniture objects
-    private GameObject[] furniture;
-
     //list of empty gameobjects that have 2 GameObject children that are hazard and safety respectively
     private GameObject[] parents;
     #endregion
@@ -125,9 +122,6 @@ public class GameController : Controller
 
         if (innocs == null)
             innocs = GameObject.FindGameObjectsWithTag("innoc");
-
-        if (furniture == null)
-            furniture = GameObject.FindGameObjectsWithTag("furniture");
 
         if (parents == null)
             parents = GameObject.FindGameObjectsWithTag("parent");
@@ -357,15 +351,6 @@ public class GameController : Controller
         RandomDisable(hazards, gameSpawn[0]);
         RandomDisable(safeties, gameSpawn[0]);
         RandomDisable(innocs, gameSpawn[1]);
-
-        //change all furniture to innocuous.
-        foreach( GameObject furn in furniture)
-        {
-            furn.tag = "innoc";
-
-            //we need to add object info to all furniture; delete this when all furniture have object info
-            furn.AddComponent<ObjectInformation>();
-        }
 
         foreach (GameObject parent in parents)
         {
