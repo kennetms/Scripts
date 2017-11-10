@@ -15,8 +15,11 @@ public class UIController : MonoBehaviour {
     //Text object for our score
     public Text m_scoreText;
 
-    //Text object for hints
+    //Text object the current hint
     public Text m_hintText;
+
+    //Text object for the number of hints
+    public Text m_hintCount;
 
     //Text object for our remaining time
     public Text m_timeText;
@@ -29,10 +32,14 @@ public class UIController : MonoBehaviour {
 
     //Text that shows how much score was added or subtracted
     public Text m_plusOrMinus;
+
     #endregion
 
     //Amount of time that the plus or minus text displayed
-    [SerializeField] private float m_time;
+    [SerializeField] private float m_plusMinusTimer;
+
+    //Amount of time that the hint text is displayed.
+    [SerializeField] private float m_hintTimer;
 
     void Start ()
     {
@@ -59,8 +66,8 @@ public class UIController : MonoBehaviour {
     {
         //checking if the text time has expired
         //if so, reset the text object.
-        m_time -= Time.deltaTime;
-        if (m_time < 0)
+        m_plusMinusTimer -= Time.deltaTime;
+        if (m_plusMinusTimer < 0)
             m_plusOrMinus.text = "";
     }
 
@@ -78,7 +85,7 @@ public class UIController : MonoBehaviour {
     /// <param name="scoreChange">The value by which the score is changing</param>
     public void DisplayPlusOrMinusText(int scoreChange)
     {
-        m_time = 2.0f;
+        m_plusMinusTimer = 2.0f;
 
         //increase in score
         if (scoreChange > 0)
@@ -91,7 +98,13 @@ public class UIController : MonoBehaviour {
             m_plusOrMinus.color = Color.red;
             m_plusOrMinus.text = "" + scoreChange;
         }
+    }
 
+    public void DisplayHint(string hint)
+    {
+        m_hintTimer = 10.0f;
+
+        m_hintText.text = hint;
     }
 
     /// <summary>
@@ -141,10 +154,17 @@ public class UIController : MonoBehaviour {
 
     /// <summary>
     /// Updates the m_hintText UI element to display the proper amount of hints remaining.
+    /// Updates the current hint displaying on the screen.
     /// </summary>
     void UpdateHintsText()
     {
-        m_hintText.text = "Hints: " + m_Controller.Hints;
+        m_hintCount.text = "Hints: " + m_Controller.Hints;
+
+        m_hintTimer -= Time.deltaTime;
+        if(m_hintTimer <= 0)
+        {
+            m_hintText.text = "";
+        }
     }
 
     /// <summary>

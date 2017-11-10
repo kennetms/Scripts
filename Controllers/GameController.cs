@@ -516,6 +516,8 @@ public class GameController : Controller
         //we know we can now hint the object, and we will
         objInfo.Hint();
 
+        m_InterfaceController
+
         //add the object to the review panel
         m_reviewPanel.AddReviewPanelObject(obj);
 
