@@ -11,10 +11,18 @@ public class GameController : Controller
     #region SpawnPoint Variables
 
     //constant SpawnPoints
-    private Vector3 sp1 = new Vector3(4, 2.5f, 5.5f);
-    private Vector3 sp2 = new Vector3(11, 2.5f, 16);
-    private Vector3 sp3 = new Vector3(11, 2.5f, 7);
-    private Vector3 sp4 = new Vector3(13, 7, 9);
+
+    //frontyard sidewalk
+    private Vector3 sp1 = new Vector3(4.75f, 1.5f, 27.0f);
+
+    //backyard patio
+    private Vector3 sp2 = new Vector3(4.75f, 1.5f, -15.0f);
+
+    //kitchen
+    private Vector3 sp3= new Vector3(-1.5f, 3.0f, -2.5f);
+
+    //master bedroom
+    private Vector3 sp4 = new Vector3(5.0f, 7.0f, -2.5f);
 
     //A list of spawn points the user can have in scene.
     //this list is constant and should be hardcoded in based on
@@ -113,6 +121,7 @@ public class GameController : Controller
             m_SpawnPoints = new List<Vector3>();
             SpawnPlayer();
         }
+
         //we need to get all of the objects of respective types to set their enabled statuses
         if (hazards == null)
             hazards = GameObject.FindGameObjectsWithTag("hazard");
