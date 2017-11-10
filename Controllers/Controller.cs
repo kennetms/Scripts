@@ -87,7 +87,7 @@ public class Controller : MonoBehaviour
                 //a button -> interaction
                 Interact(obj);
             }
-            else if(OVRInput.GetDown(OVRInput.Button.Two))//If the b button was pressed
+            else if(OVRInput.GetDown(OVRInput.Button.Two) && m_Hints > 0)//If the b button was pressed
             {
                 //b button -> Hint
                 Hinteract(obj);
