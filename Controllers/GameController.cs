@@ -113,16 +113,14 @@ public class GameController : Controller
             m_SpawnPoints = new List<Vector3>();
             SpawnPlayer();
         }
+
         //we need to get all of the objects of respective types to set their enabled statuses
         if (hazards == null)
             hazards = GameObject.FindGameObjectsWithTag("hazard");
-
         if (safeties == null)
             safeties = GameObject.FindGameObjectsWithTag("safety");
-
         if (innocs == null)
             innocs = GameObject.FindGameObjectsWithTag("innoc");
-
         if (parents == null)
             parents = GameObject.FindGameObjectsWithTag("parent");
 
@@ -130,10 +128,17 @@ public class GameController : Controller
         if (RandomizeObjectSpawn)
             RandomizeObjectEnabling(); 
 
+        //validate all object information if debugging flag is true
         if(CheckAllObjectProperties)
             CheckObjectProperties();
     }
 
+    /// <summary>
+    /// Go through every hazard, safety, and innoc to check that they have valid object properties
+    /// all object types mentioned above need a collider and must be on the gazable layer to be interactable
+    /// hazard/safety objects need ReviewInformation scripts for review info and hints, as well as base scores/interacted flags.
+    /// innocuous objects need Object information for base scores and interacted flags.
+    /// </summary>
     void CheckObjectProperties()
     {
         foreach(GameObject hazard in hazards)

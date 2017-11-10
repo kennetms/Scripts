@@ -51,7 +51,7 @@ public class GlobalController : MonoBehaviour {
     public class PlayerInfo
     {
         //disable the default constructor
-        public PlayerInfo() { }
+        private PlayerInfo() { }
 
         //the score of the player
         public int score;
@@ -152,7 +152,7 @@ public class GlobalController : MonoBehaviour {
     /// </summary>
     /// <param name="player">The player to add to the leaderboard</param>
     /// <param name="leaderboard">the leaderboard in which we add the player</param>
-    public void AddPlayerToLeaderboard(PlayerInfo player, PlayerInfo[] leaderboard)
+    void AddPlayerToLeaderboard(PlayerInfo player, PlayerInfo[] leaderboard)
     {   
         if (leaderboard[0] != null)//players are in the leaderboard
         {
