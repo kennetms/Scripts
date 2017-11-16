@@ -10,15 +10,10 @@ using UnityEngine.SceneManagement;
 /// </summary>
 public class TutorialController : Controller
 {
-    //The Text to display
-    [SerializeField] protected string m_DisplayText;
-
-    //The UIController, used to update Player UI and Display the Keyboard.
-    public UIController m_InterfaceController;
-
     //The button layout canvas
     public GameObject bLayout;
 
+    #region Interactable Tutorial Objects
     // The safety object to interact with
     public GameObject m_hazard;
 
@@ -31,27 +26,21 @@ public class TutorialController : Controller
     // The hint object to interact with
     public GameObject m_hint;
 
+    #endregion
+
     /// <summary>
     /// an enumeration to tell us what part of the tutorial we're on
     /// </summary>
-    public enum TutorialState { Idle, FirstPath, SecondPath, ThirdPath, HazardIDDone, FourthPath, WrongIDDone, FifthPath, SafetyIDDone, SixthPath, HintIDDone,
-        UpdateSelectionMode, TutorialOver
+    public enum TutorialState { Idle, FirstPath, SecondPath, ThirdPath,
+                                HazardIDDone, FourthPath, WrongIDDone,
+                                FifthPath, SafetyIDDone, SixthPath, HintIDDone,
+                                UpdateSelectionMode, TutorialOver
     }
 
     //the current state for the tutorial
     public TutorialState currentState = TutorialState.Idle;
 
-    // checks to see if hazard has been correctly identified
-    public bool m_hazardIdDone;
-
-    // checks to see if safety has been incorrectly identified
-    private bool m_wrongIdDone;
-
-    // checks to see if safety has been correctly identified
-    private bool m_safetyIdDone;
-
-    // checks to see if corgi properly hinted
-    private bool m_hintIdDone;
+    #region Paths/Blockades
 
     //[SerializeField]
     public GameObject Path1;
@@ -82,6 +71,9 @@ public class TutorialController : Controller
     //[SerializeField]
     public GameObject m_blockade2;
 
+    #endregion
+
+    #region Controller Overlay
     //the UI for the transparent image of controller
     public GameObject visibleController;
     public GameObject visibleTriggerController;
@@ -92,6 +84,7 @@ public class TutorialController : Controller
     public GameObject aButtonGlow;
     public GameObject bButtonGlow;
     public GameObject rightTriggerGlow;
+    #endregion
 
     public  float m_timeUntilSceneSwitch;
 
@@ -107,19 +100,14 @@ public class TutorialController : Controller
         //advance the state to display our first state information
         AdvanceState();
 
-        m_OutlineApplier = GetComponent<OutlineApplier>();
+        bLayout.SetActive(false);
     }
 	
 	// Update is called once per frame
 	override protected void Update ()
     {
-        if (!m_wrongIdDone)
-        {
-            //handles raycasting
-            base.Update();
-        }
         // only allow mode to be changed after the hazard is identified
-        else if (m_HazardMode && currentState == TutorialState.UpdateSelectionMode)
+        if (m_HazardMode && currentState == TutorialState.UpdateSelectionMode)
         {
                 //setting the hazard mode based on trigger presses
                 m_HazardMode = OVRInput.GetDown(OVRInput.Button.SecondaryIndexTrigger) ? !m_HazardMode : m_HazardMode;
@@ -130,25 +118,25 @@ public class TutorialController : Controller
                     AdvanceState();
                 }
         }
-        else
-        {
-            base.Update();  
-        }
-
-        if(currentState == TutorialState.TutorialOver)
+        else if (currentState == TutorialState.TutorialOver)
         {
             m_timeUntilSceneSwitch -= Time.deltaTime;
-            if(m_timeUntilSceneSwitch < 0)
+            if (m_timeUntilSceneSwitch < 0)
             {
                 // Turn on timer
                 m_InterfaceController.m_timeText.gameObject.SetActive(true);
                 SceneManager.LoadScene("MainMenu");
             }
         }
+        else
+        {
+            base.Update();  
+        }
+
         //update all of our UI elements
         m_InterfaceController.UpdateUI();
 
-        bLayout.SetActive(false);
+        
     }
 
     /// <summary>
@@ -322,17 +310,10 @@ public class TutorialController : Controller
         }
         else
         {
-            if(m_wrongIdDone)
-            {
-                return;
-            }
-            else if (m_hazardIdDone)
-            {
-                //Apply a red (incorrect) outline to the object and play fail sound
-                m_OutlineApplier.ApplyRedOutline(obj);
-                SubtractScore(objInfo.BaseScore);
-                failSound.Play();
-            }
+            //Apply a red (incorrect) outline to the object and play fail sound
+            m_OutlineApplier.ApplyRedOutline(obj);
+            SubtractScore(objInfo.BaseScore);
+            failSound.Play();
         }
 
         AdvanceState();

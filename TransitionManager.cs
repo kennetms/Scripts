@@ -8,7 +8,7 @@ using UnityEngine.SceneManagement;
 /// Class that manages the transitions from In game action to
 /// Keyboard to review panel
 /// </summary>
-public class TransitionManager : MonoBehaviour
+public class TransitionManager : SceneSwitcher
 {
     //the keyboard interface to display to the user
     public VRKeyboard m_Keyboard;
@@ -35,16 +35,5 @@ public class TransitionManager : MonoBehaviour
 
         //load the review panel in scene
         m_ReviewPanel.LoadReviewPanel();
-    }
-
-    /// <summary>
-    /// If a button is clicked, use a Unity Event Trigger that is
-    /// associated with the ButtonManager and the ButtonClicked function
-    /// loads the appropriate scene
-    /// </summary>
-    /// <param name="scene">A string denoting the name of the scene to load</param>
-    public void ButtonClicked(string scene)
-    {
-        SceneManager.LoadScene(scene);
     }
 }

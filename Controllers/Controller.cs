@@ -10,6 +10,10 @@ public class Controller : MonoBehaviour
 {
 
     #region Object associations
+
+    //The UIController, used to update Player UI and Display the Keyboard.
+    public UIController m_InterfaceController;
+
     /// the object that applies outlines to interacted GameObjects
     protected OutlineApplier m_OutlineApplier;
 
@@ -80,6 +84,9 @@ public class Controller : MonoBehaviour
         //Grab all audio sources
         sounds = GetComponents<AudioSource>();
 
+        //get our outline applier component
+        m_OutlineApplier = GetComponent<OutlineApplier>();
+
         //Assign audio sources to variables
         successSound = sounds[0];
         failSound = sounds[1];
@@ -87,9 +94,9 @@ public class Controller : MonoBehaviour
     }
 
     /// <summary>
-    /// Used to exit the scene at any time and progress in the game.
+    /// End the current round
     /// </summary>
-    protected virtual void ExitScene()
+    protected virtual void EndRound()
     {
 
     }

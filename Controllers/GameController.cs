@@ -55,8 +55,7 @@ public class GameController : Controller
     //and used to display the review panel.
     public ReviewPanelManager m_reviewPanel;
 
-    //The UIController, used to update Player UI and Display the Keyboard.
-    public UIController m_InterfaceController;
+
 
     //The canvas that displays a layout of the Oculus Touch buttons
     public Canvas buttonLayout;
@@ -114,8 +113,6 @@ public class GameController : Controller
     //list of empty gameobjects that have 2 GameObject children that are hazard and safety respectively
     private GameObject[] parents;
     #endregion
-
-
 
     /// <summary>
     /// Use for initialization
@@ -365,7 +362,7 @@ public class GameController : Controller
     /// <summary>
     /// Halts all player movement, moves them to an arbitrary location so they can see the review panel
     /// </summary>
-    private void EndRound()
+    override protected void EndRound()
     {
         //we're no longer ingame
         m_InGame = false;
