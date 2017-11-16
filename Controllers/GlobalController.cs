@@ -51,7 +51,7 @@ public class GlobalController : MonoBehaviour {
     public class PlayerInfo
     {
         //disable the default constructor
-        private PlayerInfo() { }
+        public PlayerInfo() { }
 
         //the score of the player
         public int score;

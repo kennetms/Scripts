@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 /// <summary>
 /// A base class for all controllers, handles any general controller function.
@@ -56,6 +57,16 @@ public class Controller : MonoBehaviour
 
     #endregion
 
+    #region Audio Variables
+    public AudioSource[] sounds;
+
+    public AudioSource successSound;
+
+    public AudioSource failSound;
+
+    public AudioSource hintSound;
+    #endregion
+
     /// <summary>
     /// Used for initialization
     /// </summary>
@@ -65,6 +76,22 @@ public class Controller : MonoBehaviour
         m_player = GameObject.FindObjectOfType<OVRPlayerController>();
 
         m_MaxDistance = 1.5f;
+
+        //Grab all audio sources
+        sounds = GetComponents<AudioSource>();
+
+        //Assign audio sources to variables
+        successSound = sounds[0];
+        failSound = sounds[1];
+        hintSound = sounds[2];
+    }
+
+    /// <summary>
+    /// Used to exit the scene at any time and progress in the game.
+    /// </summary>
+    protected virtual void ExitScene()
+    {
+
     }
 
     /// <summary>
@@ -206,7 +233,7 @@ public class Controller : MonoBehaviour
     /// <param name="baseScore">the baseScore of the object</param>
     protected virtual void AddScore(int baseScore)
     {
-        m_Score += baseScore;
+        m_Score += baseScore * 10;
     }
 
     /// <summary>
@@ -215,6 +242,6 @@ public class Controller : MonoBehaviour
     /// <param name="baseScore">the baseScore of the object</param>
     protected virtual void SubtractScore(int baseScore)
     {
-        m_Score -= baseScore;
+        m_Score -= baseScore * 10;
     }
 }

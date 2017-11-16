@@ -13,16 +13,27 @@ public class GameController : Controller
     //constant SpawnPoints
 
     //frontyard sidewalk
-    private Vector3 sp1 = new Vector3(4.75f, 1.5f, 27.0f);
+    //private Vector3 sp1 = new Vector3(4.75f, 1.5f, 27.0f);
 
     //backyard patio
-    private Vector3 sp2 = new Vector3(4.75f, 1.5f, -15.0f);
+    //private Vector3 sp2 = new Vector3(4.75f, 1.5f, -15.0f);
+
+
+        //dining room
+    private Vector3 sp1 = new Vector3(3.0f, 2.5f, 28.0f);
+
+    //foyer
+    private Vector3 sp2 = new Vector3(-2.0f, 2.5f, 28.0f);
+
 
     //kitchen
     private Vector3 sp3= new Vector3(-1.5f, 3.0f, -2.5f);
 
     //master bedroom
     private Vector3 sp4 = new Vector3(5.0f, 7.0f, -2.5f);
+
+    //office
+    private Vector3 sp5 = new Vector3(-5.0f, 7.0f, 24.0f);
 
     //A list of spawn points the user can have in scene.
     //this list is constant and should be hardcoded in based on
@@ -46,6 +57,9 @@ public class GameController : Controller
 
     //The UIController, used to update Player UI and Display the Keyboard.
     public UIController m_InterfaceController;
+
+    //The canvas that displays a layout of the Oculus Touch buttons
+    public Canvas buttonLayout;
 
     #endregion
 
@@ -101,14 +115,16 @@ public class GameController : Controller
     private GameObject[] parents;
     #endregion
 
-    public GameObject bLayout;
 
-    // Use this for initialization
+
+    /// <summary>
+    /// Use for initialization
+    /// </summary>
     override protected void Start ()
     {
         base.Start();
         m_OutlineApplier = GetComponent<OutlineApplier>();
-        bLayout.SetActive(false);
+        buttonLayout.gameObject.SetActive(false);
         
         //Setting our GlobalController Association
         m_globalController = GlobalController.GetInstance();
@@ -128,7 +144,23 @@ public class GameController : Controller
         if (safeties == null)
             safeties = GameObject.FindGameObjectsWithTag("safety");
         if (innocs == null)
+        {
             innocs = GameObject.FindGameObjectsWithTag("innoc");
+            foreach(var innoc in innocs)
+            {
+                //set each innoc to gazable
+                innoc.layer = 10;
+                ObjectInformation objInfo = innoc.GetComponent<ObjectInformation>();
+
+                if(objInfo == null)
+                {
+                    innoc.AddComponent<ObjectInformation>();
+                    objInfo = innoc.GetComponent<ObjectInformation>();
+                }
+
+                objInfo.BaseScore = 25;
+            }
+        }
         if (parents == null)
             parents = GameObject.FindGameObjectsWithTag("parent");
 
@@ -149,74 +181,76 @@ public class GameController : Controller
     /// </summary>
     void CheckObjectProperties()
     {
+        //go through every hazard to check for appropriate 
         foreach(GameObject hazard in hazards)
         {
             if (!hazard.GetComponent<Collider>())
-                Debug.LogError("hazard " + hazard.name + " has no collider.");
+                Debug.LogError("the hazard named " + hazard.name + " has no collider.");
 
             ReviewInformation objInfo = hazard.GetComponent<ReviewInformation>();
 
             if (!objInfo)
-                Debug.LogError("hazard " + hazard.name + " has no review information script.");
+                Debug.LogError("the hazard named " + hazard.name + " has no review information script.");
             else
             {
                 if (objInfo.BaseScore == 0)
-                    Debug.LogError("hazard " + hazard.name + " has no base score set.");
+                    Debug.LogError("the hazard named " + hazard.name + " has no base score set.");
 
                 if(objInfo.ReviewInfo == "")
-                    Debug.LogError("hazard " + hazard.name + " has no review information text.");
+                    Debug.LogError("the hazard named " + hazard.name + " has no review information text.");
 
                 if(objInfo.HintInfo == "")
-                    Debug.LogError("hazard " + hazard.name + " has no hint information text.");
+                    Debug.LogError("the hazard named " + hazard.name + " has no hint information text.");
             }
 
             //not on the gazable layer, which we need on gazable layer for raycasting
             if (hazard.layer != 10)
-                Debug.LogError("hazard " + hazard.name + "'s layer is not set to gazable.");
+                Debug.LogError("the hazard named " + hazard.name + "'s layer is not set to gazable.");
 
         }
 
         foreach (GameObject safety in safeties)
         {
             if (!safety.GetComponent<Collider>())
-                Debug.LogError("safety " + safety.name + " has no collider.");
+                Debug.LogError("the safety named " + safety.name + " has no collider.");
 
             ReviewInformation objInfo = safety.GetComponent<ReviewInformation>();
 
             if (!objInfo)
-                Debug.LogError("safety " + safety.name + " has no review information script.");
+                Debug.LogError("the safety named " + safety.name + " has no review information script.");
             else
             {
                 if (objInfo.BaseScore == 0)
-                    Debug.LogError("safety " + safety.name + " has no base score set.");
+                    Debug.LogError("the safety named " + safety.name + " has no base score set.");
 
                 if (objInfo.ReviewInfo == "")
-                    Debug.LogError("safety " + safety.name + " has no review information text.");
+                    Debug.LogError("the safety named " + safety.name + " has no review information text.");
 
                 if (objInfo.HintInfo == "")
-                    Debug.LogError("safety " + safety.name + " has no hint information text.");
+                    Debug.LogError("the safety named " + safety.name + " has no hint information text.");
             }
 
             //not on the gazable layer, which we need on gazable layer for raycasting
             if (safety.layer != 10)
-                Debug.LogError("safety " + safety.name + "'s layer is not set to gazable.");
+                Debug.LogError("the safety named " + safety.name + "'s layer is not set to gazable.");
         }
 
         foreach (GameObject innoc in innocs)
         {
             if (!innoc.GetComponent<Collider>())
-                Debug.LogError("innoc " + innoc.name + " has no collider.");
+                Debug.LogError("the innoc named" + innoc.name + " has no collider.");
 
             if (!innoc.GetComponent<ObjectInformation>())
-                Debug.LogError("innoc " + innoc.name + " has no object information.");
+                Debug.LogError("the innoc named" + innoc.name + " has no object information.");
             else if (innoc.GetComponent<ObjectInformation>().BaseScore == 0)
-                Debug.LogError("innoc " + innoc.name + " has no base score set.");
+                Debug.LogError("the innoc named" + innoc.name + " has no base score set.");
 
             //not on the gazable layer, which we need on gazable layer for raycasting
             if (innoc.layer != 10)
-                Debug.LogError("innoc " + innoc.name + "'s layer is not set to gazable.");
+                Debug.LogError("the innoc named" + innoc.name + "'s layer is not set to gazable.");
         }
     }
+
     /// <summary>
     /// Initializes the GameController's difficulty settings for the current round
     /// </summary>
@@ -272,6 +306,7 @@ public class GameController : Controller
         m_SpawnPoints.Add(sp2);
         m_SpawnPoints.Add(sp3);
         m_SpawnPoints.Add(sp4);
+        m_SpawnPoints.Add(sp5);
 
 
         //randomly choosing a player spawnpoint from our list of spawnpoints.
@@ -303,10 +338,8 @@ public class GameController : Controller
 
             if (OVRInput.GetDown(OVRInput.Button.Four)) //pressed the Y button
             {
-                if (bLayout.activeSelf)
-                    bLayout.SetActive(false);
-                else
-                    bLayout.SetActive(true);
+                //Activate our canvas if inactive; deactivate if active
+                buttonLayout.gameObject.SetActive(!buttonLayout.gameObject.activeSelf);
             }
 
             //update all of our UI elements
@@ -464,14 +497,16 @@ public class GameController : Controller
         //did we select the correct object type for the object?
         if (correctTag)
         {
-            //Apply a green (correct) outline to the object model and add score
+            //Apply a green (correct) outline to the object model and add score and play sound
             m_OutlineApplier.ApplyGreenOutline(obj);
             AddScore(objInfo.BaseScore);
+            successSound.Play();
         }
         else
         {
-            //Apply a red (incorrect) outline to the object
+            //Apply a red (incorrect) outline to the object and play fail sound
             m_OutlineApplier.ApplyRedOutline(obj);
+            failSound.Play();
 
             //based on the difficulty, points could be subtracted for an incorrect object selection.
             switch (difficulty)
@@ -524,7 +559,24 @@ public class GameController : Controller
         //we know we can now hint the object, and we will
         objInfo.Hint();
 
-        m_InterfaceController
+        //seeing if the object has review information for its hint
+        ReviewInformation reviewInfo = obj.GetComponent<ReviewInformation>();
+
+        //the hint string
+        string hint = "Hint: ";
+
+        //if no review info, it's innoc
+        if(reviewInfo == null)
+        {
+            hint += "This object seems strangely normal...";
+        }
+        else //hazard or safety, has hint info
+        {
+            hint += reviewInfo.HintInfo;
+        }
+
+        //display that hint
+        m_InterfaceController.DisplayHint(hint);
 
         //add the object to the review panel
         m_reviewPanel.AddReviewPanelObject(obj);
@@ -534,6 +586,9 @@ public class GameController : Controller
 
         //decrement the amount of hints the player has remaining
         --m_Hints;
+
+        //Play hint audio0
+        hintSound.Play();
     }
 
     /// <summary>
@@ -544,7 +599,7 @@ public class GameController : Controller
     protected override void AddScore(int baseScore)
     {
         //base score * difficulty multiplier = final score to add
-        int score = (int)Mathf.Ceil(baseScore * m_pointMultiplier);
+        int score = (int)Mathf.Ceil(baseScore * m_pointMultiplier) * 100;
         m_InterfaceController.DisplayPlusOrMinusText(score);
         m_Score += score;
     }
@@ -558,7 +613,7 @@ public class GameController : Controller
     {
         //doing 100-base score in the numerator gives less penalty for objects that were harder to spot.
         //1 - difficulty multiplier gives less penalty for medium difficulty, which has a larger difficulty multiplier than hard.
-        int score = (int)Mathf.Ceil((100 - baseScore) * (1 - m_pointMultiplier));
+        int score = (int)Mathf.Ceil((100 - baseScore) * (1 - m_pointMultiplier)) * 100;
         m_InterfaceController.DisplayPlusOrMinusText(-score);
         m_Score -= score;
     }

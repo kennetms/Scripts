@@ -100,10 +100,16 @@ public class UIController : MonoBehaviour {
         }
     }
 
+    /// <summary>
+    /// Display a hint on the UI
+    /// </summary>
+    /// <param name="hint">The hint to display</param>
     public void DisplayHint(string hint)
     {
+        //how long we want to display the hint for
         m_hintTimer = 10.0f;
 
+        //set the m_hintText.text to the hint
         m_hintText.text = hint;
     }
 
