@@ -6,7 +6,7 @@ using UnityEngine.SceneManagement;
 /// <summary>
 /// A base class for all controllers, handles any general controller function.
 /// </summary>
-public class Controller : MonoBehaviour
+abstract public class Controller : MonoBehaviour
 {
     #region Object associations
 
@@ -98,10 +98,7 @@ public class Controller : MonoBehaviour
     /// <summary>
     /// End the current round
     /// </summary>
-    protected virtual void EndRound()
-    {
-
-    }
+    abstract protected virtual void EndRound() { }
 
     /// <summary>
     /// update every frame

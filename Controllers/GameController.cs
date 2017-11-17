@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.SceneManagement;
-//using System;
-//using UnityEngine.EventSystems;
 
+/// <summary>
+/// Class that extends Controller and handles Gameplay for an individual round
+/// </summary>
 public class GameController : Controller
 {
     #region SpawnPoint Variables

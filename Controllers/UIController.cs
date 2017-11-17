@@ -4,12 +4,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+/// <summary>
+/// Class that handles all UI updates
+/// </summary>
 public class UIController : MonoBehaviour {
 
-    #region Object Associations
     //Controller object that keeps track of score, hints, hazard/safety modes, and time
     public Controller m_Controller;
-    #endregion
 
     #region Text Objects
 
@@ -44,6 +45,9 @@ public class UIController : MonoBehaviour {
     [SerializeField] private float m_hintTimer;
     #endregion
 
+    /// <summary>
+    /// Used for initialization
+    /// </summary>
     void Start ()
     {
         //on start we initialize the first UI display
