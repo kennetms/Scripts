@@ -103,35 +103,6 @@ public class GameController : Controller
     #endregion
 
     /// <summary>
-    /// Initializes GameController's Game Object arrays for hazard, safety, innocuous, and parent objects.
-    /// </summary>
-    private void InitializeObjectArrays()
-    {
-        //we need to get all of the objects of respective types to set their enabled statuses
-        hazards = GameObject.FindGameObjectsWithTag("hazard");
-        safeties = GameObject.FindGameObjectsWithTag("safety");
-        innocs = GameObject.FindGameObjectsWithTag("innoc");
-
-        //Parent objects; objects that spawn either a hazard or safety variant of an object but not both.
-        parents = GameObject.FindGameObjectsWithTag("parent");
-
-        //innocuous items all have the same baseScore, so we can associate information at runtime for them.
-        foreach (var innoc in innocs)
-        {
-            //set each innoc to gazable
-            innoc.layer = 10;
-            ObjectInformation objInfo = innoc.GetComponent<ObjectInformation>();
-
-            if (objInfo == null)
-            {
-                innoc.AddComponent<ObjectInformation>();
-                objInfo = innoc.GetComponent<ObjectInformation>();
-            }
-
-            objInfo.BaseScore = 25;
-        }
-    }
-    /// <summary>
     /// Use for initialization
     /// </summary>
     override protected void Start ()
@@ -273,6 +244,37 @@ public class GameController : Controller
         }
     }
 
+
+    /// <summary>
+    /// Initializes GameController's Game Object arrays for hazard, safety, innocuous, and parent objects.
+    /// </summary>
+    private void InitializeObjectArrays()
+    {
+        //we need to get all of the objects of respective types to set their enabled statuses
+        hazards = GameObject.FindGameObjectsWithTag("hazard");
+        safeties = GameObject.FindGameObjectsWithTag("safety");
+        innocs = GameObject.FindGameObjectsWithTag("innoc");
+
+        //Parent objects; objects that spawn either a hazard or safety variant of an object but not both.
+        parents = GameObject.FindGameObjectsWithTag("parent");
+
+        //innocuous items all have the same baseScore, so we can associate information at runtime for them.
+        foreach (var innoc in innocs)
+        {
+            //set each innoc to gazable
+            innoc.layer = 10;
+            ObjectInformation objInfo = innoc.GetComponent<ObjectInformation>();
+
+            if (objInfo == null)
+            {
+                innoc.AddComponent<ObjectInformation>();
+                objInfo = innoc.GetComponent<ObjectInformation>();
+            }
+
+            objInfo.BaseScore = 25;
+        }
+    }
+
     /// <summary>
     /// Spawns the player randomly from a list of given spawn points
     /// </summary>
@@ -280,7 +282,7 @@ public class GameController : Controller
     {
         if (m_player == null)
         {
-            Debug.LogError("No player controller initialized in GameController");
+            Debug.LogError("No OVRPlayerController initialized in scene");
             return;
         }
 

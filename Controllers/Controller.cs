@@ -18,7 +18,7 @@ abstract public class Controller : MonoBehaviour
 
     ///OVRPlayerController, The GameObject that holds our OVRCameraRig
     ///& input modules, as well as player options
-    public OVRPlayerController m_player;
+    protected OVRPlayerController m_player;
 
     ///OVRGazePointer, the reticle object we use for our playercontroller
     public OVRGazePointer m_reticle;
@@ -98,7 +98,7 @@ abstract public class Controller : MonoBehaviour
     /// <summary>
     /// End the current round
     /// </summary>
-    abstract protected virtual void EndRound() { }
+    abstract protected void EndRound();
 
     /// <summary>
     /// update every frame
@@ -135,7 +135,7 @@ abstract public class Controller : MonoBehaviour
 
         if(OVRInput.GetDown(OVRInput.Button.Three)) //pressed the X button
         {
-            
+            //end the user's round
             EndRound();
         }
     }
@@ -155,8 +155,11 @@ abstract public class Controller : MonoBehaviour
         //initialize variables needed to raycast
         RaycastHit hit;
 
+        //only raycast onto gazable layer
+        var layerMask = LayerMask.GetMask("Gazable");
+
         //the layer of gazable objects, layer 10.
-        var layerMask = 1 << 10;
+        //var layerMask = 1 << 10;
 
         //return the GameObject we hit if there is one, otherwise return null
         //Also to note, the Raycast function call parameter 10 is the layer for gazable objects;
