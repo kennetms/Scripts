@@ -77,7 +77,7 @@ public class GameController : Controller
     private float[] gameSpawn = new float[] { };
     #endregion
 
-    #region Debugging flags
+    #region Debugging variables
     //Debugging flag to disable random object spawns if desired.
     public bool RandomizeObjectSpawn = false;
 
@@ -86,6 +86,8 @@ public class GameController : Controller
 
     //Debugging flag that will run through all hazards/safeties/innocs to make sure they have the proper information.
     public bool CheckAllObjectProperties = false;
+
+    public int ObjectsDisabled;
     #endregion
 
     #region Object arrays
@@ -262,15 +264,17 @@ public class GameController : Controller
         foreach (var innoc in innocs)
         {
             //set each innoc to gazable
-            innoc.layer = 10;
-            ObjectInformation objInfo = innoc.GetComponent<ObjectInformation>();
+            innoc.layer = LayerMask.GetMask("Gazable");
 
+            //get object info, initialize if nonexistant
+            ObjectInformation objInfo = innoc.GetComponent<ObjectInformation>();
             if (objInfo == null)
             {
                 innoc.AddComponent<ObjectInformation>();
                 objInfo = innoc.GetComponent<ObjectInformation>();
             }
 
+            //set the same base score for all innocuous objects
             objInfo.BaseScore = 25;
         }
     }
@@ -435,6 +439,7 @@ public class GameController : Controller
                 ++currCount;
             }
         } while (currCount < maxDisabledItems * randomSpawn && ++i != startPoint - 1);
+
     }
 
     /// <summary>

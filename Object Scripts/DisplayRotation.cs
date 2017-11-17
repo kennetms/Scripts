@@ -13,8 +13,11 @@ public class DisplayRotation : MonoBehaviour
     /// </summary>
     public static Vector3 positionOnScreen = new Vector3(0.2f, 0.4f, 4.0f);
 
-    //public Camera mainCamera;
-    public static void CenterObject(GameObject obj)
+    /// <summary>
+    /// updates an object's position and rotates the object on a specific camera location
+    /// </summary>
+    /// <param name="obj">the object we manipulate</param>
+    public static void RotateView(GameObject obj)
     {
         //Put object in the viewport space
         obj.transform.position = Camera.main.ViewportToWorldPoint(positionOnScreen);
