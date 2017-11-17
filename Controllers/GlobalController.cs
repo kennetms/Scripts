@@ -40,7 +40,7 @@ public class GlobalController : MonoBehaviour {
     private static GlobalController m_Instance;
 
     //the max number of players in the leaderboard
-    private int maxLeaderboardSize;
+    private const int maxLeaderboardSize = 10;
 
     private PlayerInfo m_currentPlayer;
 
@@ -82,10 +82,9 @@ public class GlobalController : MonoBehaviour {
     /// </summary>
     /// <param name="diff">the difficulty for the current round</param>
     /// <param name="maxLBSize">maximum number of players in the leaderboard</param>
-    private GlobalController(Difficulty diff, int maxLBSize)
+    private GlobalController(Difficulty diff)
     {
         m_difficulty = diff;
-        maxLeaderboardSize = maxLBSize;
         //initialize our leaderboard
         easyLeaderboard = new PlayerInfo[maxLeaderboardSize];
         mediumLeaderboard = new PlayerInfo[maxLeaderboardSize];
@@ -105,9 +104,9 @@ public class GlobalController : MonoBehaviour {
     /// <returns> The single instance of the GlobalController </returns>
     public static GlobalController GetInstance()
     {
-        //if we don't already have an instance of GlobalController, make a default one here
+        //if we don't already have an instance of GlobalController, make a default one here on easy
         if (m_Instance == null)
-            m_Instance = new GlobalController(Difficulty.Easy, 10);
+            m_Instance = new GlobalController(Difficulty.Easy);
 
         return m_Instance;
     }
@@ -116,10 +115,6 @@ public class GlobalController : MonoBehaviour {
     {
         //initialize the current player which we will later be adding to the leaderboard
         m_currentPlayer = new PlayerInfo();
-
-        //maxLeaderboardSize is defaulted to 10 because that is the sizing for the leaderboard
-        //UI that is currently supported.
-        maxLeaderboardSize = 10;
 
         //Check if our GlobalController has been created already
         if (m_Instance != null)

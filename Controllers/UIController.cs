@@ -12,6 +12,7 @@ public class UIController : MonoBehaviour {
     #endregion
 
     #region Text Objects
+
     //Text object for our score
     public Text m_scoreText;
 
@@ -27,7 +28,7 @@ public class UIController : MonoBehaviour {
     //Text object for our current selection mode.
     public Text m_modeText;
 
-    //Text to display
+    //Text to display for user tasks
     public Text m_DisplayText;
 
     //Text that shows how much score was added or subtracted
@@ -35,11 +36,13 @@ public class UIController : MonoBehaviour {
 
     #endregion
 
+    #region UI Timers
     //Amount of time that the plus or minus text displayed
     [SerializeField] private float m_plusMinusTimer;
 
     //Amount of time that the hint text is displayed.
     [SerializeField] private float m_hintTimer;
+    #endregion
 
     void Start ()
     {
@@ -164,8 +167,10 @@ public class UIController : MonoBehaviour {
     /// </summary>
     void UpdateHintsText()
     {
+        //update the count of hints
         m_hintCount.text = "Hints: " + m_Controller.Hints;
 
+        //decrementing the hint timer to stop displaying a hint after the timer reaches 0.
         m_hintTimer -= Time.deltaTime;
         if(m_hintTimer <= 0)
         {

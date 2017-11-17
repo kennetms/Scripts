@@ -55,18 +55,6 @@ public class GameController : Controller
     //and used to display the review panel.
     public ReviewPanelManager m_reviewPanel;
 
-
-
-    //The canvas that displays a layout of the Oculus Touch buttons
-    public Canvas buttonLayout;
-
-    #endregion
-
-    #region Round attributes
-
-    //flag for distinguishing if the gamecontroller is running the ingame functions
-    private bool m_InGame = true;
-
     #endregion
 
     #region Difficulty Settings
@@ -115,59 +103,58 @@ public class GameController : Controller
     #endregion
 
     /// <summary>
+    /// Initializes GameController's Game Object arrays for hazard, safety, innocuous, and parent objects.
+    /// </summary>
+    private void InitializeObjectArrays()
+    {
+        //we need to get all of the objects of respective types to set their enabled statuses
+        hazards = GameObject.FindGameObjectsWithTag("hazard");
+        safeties = GameObject.FindGameObjectsWithTag("safety");
+        innocs = GameObject.FindGameObjectsWithTag("innoc");
+
+        //Parent objects; objects that spawn either a hazard or safety variant of an object but not both.
+        parents = GameObject.FindGameObjectsWithTag("parent");
+
+        //innocuous items all have the same baseScore, so we can associate information at runtime for them.
+        foreach (var innoc in innocs)
+        {
+            //set each innoc to gazable
+            innoc.layer = 10;
+            ObjectInformation objInfo = innoc.GetComponent<ObjectInformation>();
+
+            if (objInfo == null)
+            {
+                innoc.AddComponent<ObjectInformation>();
+                objInfo = innoc.GetComponent<ObjectInformation>();
+            }
+
+            objInfo.BaseScore = 25;
+        }
+    }
+    /// <summary>
     /// Use for initialization
     /// </summary>
     override protected void Start ()
     {
+        //initialize all Controller aspects of GameController
         base.Start();
-        m_OutlineApplier = GetComponent<OutlineApplier>();
-        buttonLayout.gameObject.SetActive(false);
         
         //Setting our GlobalController Association
         m_globalController = GlobalController.GetInstance();
 
         InitializeDifficultySettings();
+        InitializeObjectArrays();
 
-        //randomly spawn the player if the debugging flag is true
+        #region Debugging Flag Method Initializations
         if (RandomizePlayerSpawn)
-        {
-            m_SpawnPoints = new List<Vector3>();
             SpawnPlayer();
-        }
 
-        //we need to get all of the objects of respective types to set their enabled statuses
-        if (hazards == null)
-            hazards = GameObject.FindGameObjectsWithTag("hazard");
-        if (safeties == null)
-            safeties = GameObject.FindGameObjectsWithTag("safety");
-        if (innocs == null)
-        {
-            innocs = GameObject.FindGameObjectsWithTag("innoc");
-            foreach(var innoc in innocs)
-            {
-                //set each innoc to gazable
-                innoc.layer = 10;
-                ObjectInformation objInfo = innoc.GetComponent<ObjectInformation>();
-
-                if(objInfo == null)
-                {
-                    innoc.AddComponent<ObjectInformation>();
-                    objInfo = innoc.GetComponent<ObjectInformation>();
-                }
-
-                objInfo.BaseScore = 25;
-            }
-        }
-        if (parents == null)
-            parents = GameObject.FindGameObjectsWithTag("parent");
-
-        //Randomize object spawns if the debugging flag is true
         if (RandomizeObjectSpawn)
             RandomizeObjectEnabling(); 
 
-        //validate all object information if debugging flag is true
         if(CheckAllObjectProperties)
             CheckObjectProperties();
+    #endregion
     }
 
     /// <summary>
@@ -321,27 +308,17 @@ public class GameController : Controller
     /// </summary>
     override protected void Update()
     {
-        //only update our UI & raycast if we're still in game
-        if(m_InGame)
-        {
-            //update our time first; will determine if the round ends
-            UpdateGameTime();
+        //update our time first; will determine if the round ends
+        UpdateGameTime();
 
-            //setting the hazard mode based on trigger presses
-            m_HazardMode = OVRInput.GetDown(OVRInput.Button.SecondaryIndexTrigger) ? !m_HazardMode : m_HazardMode;
+        //setting the hazard mode based on trigger presses
+        m_HazardMode = OVRInput.GetDown(OVRInput.Button.SecondaryIndexTrigger) ? !m_HazardMode : m_HazardMode;
 
-            //Controller.Update handles raycasting each frame, since all controllers require raycasting.
-            base.Update();
+        //Controller.Update handles raycasting each frame, since all controllers require raycasting.
+        base.Update();
 
-            if (OVRInput.GetDown(OVRInput.Button.Four)) //pressed the Y button
-            {
-                //Activate our canvas if inactive; deactivate if active
-                buttonLayout.gameObject.SetActive(!buttonLayout.gameObject.activeSelf);
-            }
-
-            //update all of our UI elements
-            m_InterfaceController.UpdateUI();
-        }
+        //update all of our UI elements
+        m_InterfaceController.UpdateUI();
     }
 
     /// <summary>
@@ -364,8 +341,7 @@ public class GameController : Controller
     /// </summary>
     override protected void EndRound()
     {
-        //we're no longer ingame
-        m_InGame = false;
+        //we're no longer ingame, disable GameController's update() method
         enabled = false;
 
         //disable player movement & gravity, and position them in a place they can view the review panel somewhere outside of the scene

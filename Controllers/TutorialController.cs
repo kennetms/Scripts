@@ -10,8 +10,6 @@ using UnityEngine.SceneManagement;
 /// </summary>
 public class TutorialController : Controller
 {
-    //The button layout canvas
-    public GameObject bLayout;
 
     #region Interactable Tutorial Objects
     // The safety object to interact with
@@ -28,17 +26,19 @@ public class TutorialController : Controller
 
     #endregion
 
+    #region State Properties
     /// <summary>
     /// an enumeration to tell us what part of the tutorial we're on
     /// </summary>
     public enum TutorialState { Idle, FirstPath, SecondPath, ThirdPath,
                                 HazardIDDone, FourthPath, WrongIDDone,
                                 FifthPath, SafetyIDDone, SixthPath, HintIDDone,
-                                UpdateSelectionMode, TutorialOver
-    }
+                                UpdateSelectionMode, TutorialOver }
 
     //the current state for the tutorial
-    public TutorialState currentState = TutorialState.Idle;
+    public TutorialState m_currentState = TutorialState.Idle;
+
+    #endregion
 
     #region Paths/Blockades
 
@@ -86,28 +86,27 @@ public class TutorialController : Controller
     public GameObject rightTriggerGlow;
     #endregion
 
-    public  float m_timeUntilSceneSwitch;
+    //once the tutorial is over, track the time until the scene is over.
+    public float m_timeUntilSceneSwitch;
 
     // Use this for initialization
     override protected void Start ()
     {
-        // Turn off timer
-        m_InterfaceController.m_timeText.gameObject.SetActive(false);
-
         //initalize the parts of the controller of the base controller class
         base.Start();
 
+        // Turn off timer
+        m_InterfaceController.m_timeText.gameObject.SetActive(false);
+
         //advance the state to display our first state information
         AdvanceState();
-
-        bLayout.SetActive(false);
     }
 	
 	// Update is called once per frame
 	override protected void Update ()
     {
         // only allow mode to be changed after the hazard is identified
-        if (m_HazardMode && currentState == TutorialState.UpdateSelectionMode)
+        if (m_HazardMode && m_currentState == TutorialState.UpdateSelectionMode)
         {
                 //setting the hazard mode based on trigger presses
                 m_HazardMode = OVRInput.GetDown(OVRInput.Button.SecondaryIndexTrigger) ? !m_HazardMode : m_HazardMode;
@@ -118,15 +117,11 @@ public class TutorialController : Controller
                     AdvanceState();
                 }
         }
-        else if (currentState == TutorialState.TutorialOver)
+        else if (m_currentState == TutorialState.TutorialOver)
         {
             m_timeUntilSceneSwitch -= Time.deltaTime;
             if (m_timeUntilSceneSwitch < 0)
-            {
-                // Turn on timer
-                m_InterfaceController.m_timeText.gameObject.SetActive(true);
                 SceneManager.LoadScene("MainMenu");
-            }
         }
         else
         {
@@ -135,8 +130,12 @@ public class TutorialController : Controller
 
         //update all of our UI elements
         m_InterfaceController.UpdateUI();
+    }
 
-        
+    override protected void EndRound()
+    {
+        m_currentState = TutorialState.TutorialOver;
+        m_timeUntilSceneSwitch = 5.0f;
     }
 
     /// <summary>
@@ -146,11 +145,11 @@ public class TutorialController : Controller
     public void AdvanceState()
     {
         //our current state will determine the next state we move to and the information we need to update.
-        switch (currentState)
+        switch (m_currentState)
         {
             case TutorialState.Idle:
                 m_InterfaceController.UpdateDisplayText("Task: Use left joystick to move and follow the glowing path");
-                currentState = TutorialState.FirstPath;
+                m_currentState = TutorialState.FirstPath;
                 break;
 
             case TutorialState.FirstPath:
@@ -159,11 +158,10 @@ public class TutorialController : Controller
                 Path1.SetActive(false);
                 Path2.SetActive(true);
 
-
                 //remove the blockade for the player to advance
                 m_blockade1.SetActive(false);
                 m_InterfaceController.UpdateDisplayText("Task: Use right joystick to rotate and follow the next glowing path");
-                currentState = TutorialState.SecondPath;
+                m_currentState = TutorialState.SecondPath;
 
                 //set left joystick glow to inactive and right joystick glow to active
                 leftJoystickGlow.SetActive(false);
@@ -175,7 +173,7 @@ public class TutorialController : Controller
                 Path3.SetActive(true);
                 m_blockade2.SetActive(true);
                 m_InterfaceController.UpdateDisplayText("Task: Continue to follow the glowing path towards the next stand");
-                currentState = TutorialState.ThirdPath;
+                m_currentState = TutorialState.ThirdPath;
 
                 rightJoystickGlow.SetActive(false);
                 break;
@@ -184,16 +182,15 @@ public class TutorialController : Controller
                 Path3.SetActive(false);
                 m_hazard.SetActive(true);
                 m_InterfaceController.UpdateDisplayText("Task: Point reticle at rifle and click A to identify object as an Hazard object");
-                currentState = TutorialState.HazardIDDone;
+                m_currentState = TutorialState.HazardIDDone;
 
                 aButtonGlow.SetActive(true);
                 break;
 
             case TutorialState.HazardIDDone:
-                m_hazardIdDone = true;
                 m_InterfaceController.UpdateDisplayText("Task: Good job! Continue to follow the glowing path towards the next stand");
                 Path4.SetActive(true);
-                currentState = TutorialState.FourthPath;
+                m_currentState = TutorialState.FourthPath;
 
                 aButtonGlow.SetActive(false);
                 break;
@@ -202,16 +199,15 @@ public class TutorialController : Controller
                 Path4.SetActive(false);
                 m_wrong.SetActive(true);
                 m_InterfaceController.UpdateDisplayText("Task: Point reticle at helmet and click A to identify object as an Hazard object");
-                currentState = TutorialState.WrongIDDone;
+                m_currentState = TutorialState.WrongIDDone;
 
                 aButtonGlow.SetActive(true);
                 break;
 
             case TutorialState.WrongIDDone:
-                m_wrongIdDone = true;
                 m_InterfaceController.UpdateDisplayText("Task: Oh no! That helmet wasn't a hazard. Follow the path to the next stand to try again.");
                 Path5.SetActive(true);
-                currentState = TutorialState.FifthPath;
+                m_currentState = TutorialState.FifthPath;
 
                 aButtonGlow.SetActive(false);
                 break;
@@ -219,7 +215,7 @@ public class TutorialController : Controller
             case TutorialState.FifthPath:
                 Path5.SetActive(false);
                 m_InterfaceController.UpdateDisplayText("Task: Press the Right Trigger Button to change selection mode to Safety.");
-                currentState = TutorialState.UpdateSelectionMode;
+                m_currentState = TutorialState.UpdateSelectionMode;
 
                 visibleController.SetActive(false);
                 visibleTriggerController.SetActive(true);
@@ -229,7 +225,7 @@ public class TutorialController : Controller
             case TutorialState.UpdateSelectionMode:
                 m_safety.SetActive(true);
                 m_InterfaceController.UpdateDisplayText("Task: Point the reticle at the helmet and press A to identify object as a Safety object");
-                currentState = TutorialState.SafetyIDDone;
+                m_currentState = TutorialState.SafetyIDDone;
 
                 visibleTriggerController.SetActive(false);
                 visibleController.SetActive(true);
@@ -237,10 +233,9 @@ public class TutorialController : Controller
                 break;
 
             case TutorialState.SafetyIDDone:
-                m_safetyIdDone = true;
                 m_InterfaceController.UpdateDisplayText("Task: Good job! Continue to follow the glowing path towards the next stand");
                 Path6.SetActive(true);
-                currentState = TutorialState.SixthPath;
+                m_currentState = TutorialState.SixthPath;
 
                 aButtonGlow.SetActive(false);
                 break;
@@ -249,16 +244,18 @@ public class TutorialController : Controller
                 m_hint.SetActive(true);
                 Path6.SetActive(false);
                 m_InterfaceController.UpdateDisplayText("Task: Point reticle at dog and click B to hint the object");
-                currentState = TutorialState.HintIDDone;
+                m_currentState = TutorialState.HintIDDone;
 
                 bButtonGlow.SetActive(true);
                 break;
 
             case TutorialState.HintIDDone:
                 m_InterfaceController.UpdateDisplayText("Task: You have completed the tutorial!");
-                currentState = TutorialState.TutorialOver;
-                m_timeUntilSceneSwitch = 5.0f;
                 bButtonGlow.SetActive(false);
+                EndRound();
+                break;
+
+            case TutorialState.TutorialOver:
                 break;
 
             default:
@@ -291,7 +288,7 @@ public class TutorialController : Controller
             return;
         }
 
-        //update interaction flag.
+        //indicate to the object's info that we've interacted with it.
         objInfo.Interact();
 
         //string for comparing tags
@@ -325,33 +322,27 @@ public class TutorialController : Controller
     /// <param name="obj">the object to try to hint</param>
     override public void Hinteract(GameObject obj)
     {
-        if (!m_safetyIdDone)
-            return;
-        else
-        { 
+        base.Hinteract(obj);
 
-            base.Hinteract(obj);
+        //seeing if the object has review information for its hint
+        ReviewInformation reviewInfo = obj.GetComponent<ReviewInformation>();
 
-            //seeing if the object has review information for its hint
-            ReviewInformation reviewInfo = obj.GetComponent<ReviewInformation>();
+        //the hint string
+        string hint = "Hint: ";
 
-            //the hint string
-            string hint = "Hint: ";
-
-            //if no review info, it's innoc
-            if (reviewInfo == null)
-            {
-                hint += "This object seems strangely normal...";
-            }
-            else //hazard or safety, has hint info
-            {
-                hint += reviewInfo.HintInfo;
-            }
-
-            //display that hint and play sound effect
-            m_InterfaceController.DisplayHint(hint);
-            hintSound.Play();
-            AdvanceState();
+        //if no review info, it's innoc
+        if (reviewInfo == null)
+        {
+            hint += "This object seems strangely normal...";
         }
+        else //hazard or safety, has hint info
+        {
+            hint += reviewInfo.HintInfo;
+        }
+
+        //display that hint and play sound effect
+        m_InterfaceController.DisplayHint(hint);
+        hintSound.Play();
+        AdvanceState();
     }
 }

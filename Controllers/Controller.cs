@@ -8,7 +8,6 @@ using UnityEngine.SceneManagement;
 /// </summary>
 public class Controller : MonoBehaviour
 {
-
     #region Object associations
 
     //The UIController, used to update Player UI and Display the Keyboard.
@@ -23,11 +22,14 @@ public class Controller : MonoBehaviour
 
     ///OVRGazePointer, the reticle object we use for our playercontroller
     public OVRGazePointer m_reticle;
+
+    //The canvas that displays a layout of the Oculus Touch buttons
+    public Canvas buttonLayout;
     #endregion
 
     #region Game Attributes
     //the maximum distance for which we can raycast
-    private float m_MaxDistance;
+    private const float m_MaxDistance = 1.5f;
 
     //The user's ingame score
     [SerializeField] protected int m_Score;
@@ -79,8 +81,6 @@ public class Controller : MonoBehaviour
         //associate m_player with the OVRPlayerController
         m_player = GameObject.FindObjectOfType<OVRPlayerController>();
 
-        m_MaxDistance = 1.5f;
-
         //Grab all audio sources
         sounds = GetComponents<AudioSource>();
 
@@ -91,6 +91,8 @@ public class Controller : MonoBehaviour
         successSound = sounds[0];
         failSound = sounds[1];
         hintSound = sounds[2];
+
+        buttonLayout.gameObject.SetActive(false);
     }
 
     /// <summary>
@@ -126,6 +128,18 @@ public class Controller : MonoBehaviour
                 //b button -> Hint
                 Hinteract(obj);
             }
+        }
+
+        if (OVRInput.GetDown(OVRInput.Button.Four)) //pressed the Y button
+        {
+            //Activate our canvas if inactive; deactivate if active
+            buttonLayout.gameObject.SetActive(!buttonLayout.gameObject.activeSelf);
+        }
+
+        if(OVRInput.GetDown(OVRInput.Button.Three)) //pressed the X button
+        {
+            
+            EndRound();
         }
     }
 
