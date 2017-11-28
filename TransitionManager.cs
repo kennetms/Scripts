@@ -5,6 +5,7 @@ using UnityEngine;
 /// <summary>
 /// Class that manages the transitions from In game action to
 /// Keyboard to review panel
+/// inheirits from SceneSwitcher to allow for management of scene switches as well
 /// </summary>
 public class TransitionManager : SceneSwitcher
 {

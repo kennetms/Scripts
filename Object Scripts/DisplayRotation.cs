@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-/// script that displays and rotates the object in the review panel
+/// <summary>
+/// Class that displays and rotates an object.
+/// </summary>
 public class DisplayRotation : MonoBehaviour
 {
     /// <summary>

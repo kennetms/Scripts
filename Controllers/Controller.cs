@@ -45,7 +45,7 @@ abstract public class Controller : MonoBehaviour
     /// Time left in the round, displayed on User interface
     /// Unit is seconds
     /// </summary>
-    [SerializeField] protected float m_timeLeft = 300.0f;
+    [SerializeField] protected float m_timeLeft;
 
 
 
@@ -64,12 +64,16 @@ abstract public class Controller : MonoBehaviour
     #endregion
 
     #region Audio Variables
+    //array of sounds
     public AudioSource[] sounds;
 
+    //sound for correct selection of an object
     public AudioSource successSound;
 
+    //sound for incorrect selection of an object
     public AudioSource failSound;
 
+    //sound for hinting an object
     public AudioSource hintSound;
     #endregion
 
@@ -92,6 +96,7 @@ abstract public class Controller : MonoBehaviour
         failSound = sounds[1];
         hintSound = sounds[2];
 
+        //assure that the button layout is not active
         buttonLayout.gameObject.SetActive(false);
     }
 

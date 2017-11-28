@@ -12,6 +12,7 @@ public class TutorialController : Controller
 {
 
     #region Interactable Tutorial Objects
+
     // The safety object to interact with
     public GameObject m_hazard;
 
@@ -27,6 +28,7 @@ public class TutorialController : Controller
     #endregion
 
     #region State Properties
+
     /// <summary>
     /// an enumeration to tell us what part of the tutorial we're on
     /// </summary>
@@ -119,6 +121,7 @@ public class TutorialController : Controller
         }
         else if (m_currentState == TutorialState.TutorialOver)
         {
+            //countdown after the tutorial is over before switching back to the main menu
             m_timeUntilSceneSwitch -= Time.deltaTime;
             if (m_timeUntilSceneSwitch < 0)
                 SceneManager.LoadScene("MainMenu");
@@ -132,6 +135,9 @@ public class TutorialController : Controller
         m_InterfaceController.UpdateUI();
     }
 
+    /// <summary>
+    /// end the tutorial
+    /// </summary>
     override protected void EndRound()
     {
         m_currentState = TutorialState.TutorialOver;

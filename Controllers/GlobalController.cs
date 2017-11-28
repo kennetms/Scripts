@@ -50,9 +50,6 @@ public class GlobalController : MonoBehaviour {
     /// </summary>
     public class PlayerInfo
     {
-        //disable the default constructor
-        public PlayerInfo() { }
-
         //the score of the player
         public int score;
 
@@ -136,6 +133,9 @@ public class GlobalController : MonoBehaviour {
         }
     }
 
+    /// <summary>
+    /// called before Start function to make sure our GlobalController is preserved throughout scenes.
+    /// </summary>
     void Awake()
     {
         //Keeps the GlobalController instantiated throughout each scene

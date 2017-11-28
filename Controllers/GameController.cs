@@ -10,16 +10,15 @@ public class GameController : Controller
 {
     #region SpawnPoint Variables
 
+
+    //A list of spawn points the user can have in scene.
+    //this list is constant and should be hardcoded in based on
+    //where you want valid spawnpoints in the scene to be.
+    private List<Vector3> m_SpawnPoints;
+
     //constant SpawnPoints
 
-    //frontyard sidewalk
-    //private Vector3 sp1 = new Vector3(4.75f, 1.5f, 27.0f);
-
-    //backyard patio
-    //private Vector3 sp2 = new Vector3(4.75f, 1.5f, -15.0f);
-
-
-        //dining room
+    //dining room
     private Vector3 sp1 = new Vector3(3.0f, 2.5f, 28.0f);
 
     //foyer
@@ -35,15 +34,12 @@ public class GameController : Controller
     //office
     private Vector3 sp5 = new Vector3(-5.0f, 7.0f, 24.0f);
 
-    //A list of spawn points the user can have in scene.
-    //this list is constant and should be hardcoded in based on
-    //where you want valid spawnpoints in the scene to be.
-    private List<Vector3> m_SpawnPoints;
 
     #endregion
 
     #region Object Associations
 
+    //transition manager to handle keyboard/review panel switches, and eventual scene switch
     public TransitionManager m_TransitionManager;
 
     public VRKeyboard m_Keyboard;
@@ -59,8 +55,10 @@ public class GameController : Controller
 
     #region Difficulty Settings
 
+    //current round difficulty
     private GlobalController.Difficulty difficulty;
 
+    //current round point multiplier, determined by difficulty
     [SerializeField] private float m_pointMultiplier;
     
     //the maximum number of objects we can disable before we let the rest spawn;
@@ -91,6 +89,7 @@ public class GameController : Controller
     #endregion
 
     #region Object arrays
+
     //list of hazard objects
     private GameObject[] hazards;
 
@@ -102,6 +101,7 @@ public class GameController : Controller
 
     //list of empty gameobjects that have 2 GameObject children that are hazard and safety respectively
     private GameObject[] parents;
+
     #endregion
 
     /// <summary>
@@ -138,7 +138,7 @@ public class GameController : Controller
     /// </summary>
     void CheckObjectProperties()
     {
-        //go through every hazard to check for appropriate 
+        //go through every hazard to check for appropriate components and information
         foreach(GameObject hazard in hazards)
         {
             if (!hazard.GetComponent<Collider>())
@@ -146,6 +146,7 @@ public class GameController : Controller
 
             ReviewInformation objInfo = hazard.GetComponent<ReviewInformation>();
 
+            //checking if we have review information
             if (!objInfo)
                 Debug.LogError("the hazard named " + hazard.name + " has no review information script.");
             else
@@ -166,11 +167,14 @@ public class GameController : Controller
 
         }
 
+        //go through each safety to check for appropriate components and information
         foreach (GameObject safety in safeties)
         {
+            //checking for collider, needed for interaction
             if (!safety.GetComponent<Collider>())
                 Debug.LogError("the safety named " + safety.name + " has no collider.");
 
+            //checking each object for review information
             ReviewInformation objInfo = safety.GetComponent<ReviewInformation>();
 
             if (!objInfo)
@@ -192,11 +196,14 @@ public class GameController : Controller
                 Debug.LogError("the safety named " + safety.name + "'s layer is not set to gazable.");
         }
 
+        //go through each innoc to check for appropriate components and information
         foreach (GameObject innoc in innocs)
         {
+            //check for a collider, needed for interaction
             if (!innoc.GetComponent<Collider>())
                 Debug.LogError("the innoc named" + innoc.name + " has no collider.");
 
+            //checking for object information on an innocuous object
             if (!innoc.GetComponent<ObjectInformation>())
                 Debug.LogError("the innoc named" + innoc.name + " has no object information.");
             else if (innoc.GetComponent<ObjectInformation>().BaseScore == 0)
@@ -390,13 +397,13 @@ public class GameController : Controller
     /// <param name="parent"> The parent for which we are selecting children</param>
     private void ParentSelectChild(GameObject parent)
     {
-        
+        //making sure that the parent has children to enable/disable
         int numChildren = parent.transform.childCount;
-
         if(numChildren == 0)
         {
             Debug.LogError("Parent " + parent.name + " has no children");
         }
+
         //disable all children of a parent object
         for (int i = 0; i < numChildren; ++i)
             parent.transform.GetChild(i).gameObject.SetActive(false);
@@ -423,7 +430,6 @@ public class GameController : Controller
         //this random start point is picked to reduce favoring of leaving certain objects enabled with the way the array is ordered
         int startPoint = Random.Range(0, objects.Length - 1);
         int i = startPoint;
-
 
         //disabling randomly until we hit our max disabled items OR until we've done one pass of the array
         do
