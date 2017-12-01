@@ -138,7 +138,7 @@ public class TutorialController : Controller
     /// <summary>
     /// end the tutorial
     /// </summary>
-    override protected void EndRound()
+    protected void EndRound()
     {
         m_currentState = TutorialState.TutorialOver;
         m_timeUntilSceneSwitch = 5.0f;

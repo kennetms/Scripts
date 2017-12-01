@@ -266,12 +266,12 @@ public class GameController : Controller
 
         //Parent objects; objects that spawn either a hazard or safety variant of an object but not both.
         parents = GameObject.FindGameObjectsWithTag("parent");
-
+        
         //innocuous items all have the same baseScore, so we can associate information at runtime for them.
         foreach (var innoc in innocs)
         {
             //set each innoc to gazable
-            innoc.layer = LayerMask.GetMask("Gazable");
+            innoc.layer = 10;
 
             //get object info, initialize if nonexistant
             ObjectInformation objInfo = innoc.GetComponent<ObjectInformation>();
@@ -352,7 +352,7 @@ public class GameController : Controller
     /// <summary>
     /// Halts all player movement, moves them to an arbitrary location so they can see the review panel
     /// </summary>
-    override protected void EndRound()
+    protected void EndRound()
     {
         //we're no longer ingame, disable GameController's update() method
         enabled = false;

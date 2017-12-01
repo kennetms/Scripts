@@ -101,11 +101,6 @@ abstract public class Controller : MonoBehaviour
     }
 
     /// <summary>
-    /// End the current round
-    /// </summary>
-    abstract protected void EndRound();
-
-    /// <summary>
     /// update every frame
     /// </summary>
     protected virtual void Update()
@@ -136,12 +131,6 @@ abstract public class Controller : MonoBehaviour
         {
             //Activate our canvas if inactive; deactivate if active
             buttonLayout.gameObject.SetActive(!buttonLayout.gameObject.activeSelf);
-        }
-
-        if(OVRInput.GetDown(OVRInput.Button.Three)) //pressed the X button
-        {
-            //end the user's round
-            EndRound();
         }
     }
 
